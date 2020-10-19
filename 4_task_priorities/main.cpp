@@ -60,9 +60,9 @@ int main(void) {
   blue_led.output_settings(custom_libraries::PUSH_PULL,custom_libraries::VERY_HIGH);
 
   xTaskCreate(green_led_task,"Green led cotroller",100,NULL,1,NULL);
-  xTaskCreate(orange_led_task,"Green led cotroller",100,NULL,1,NULL);
-  xTaskCreate(red_led_task,"Green led cotroller",100,NULL,1,NULL);
-  xTaskCreate(blue_led_task,"Green led cotroller",100,NULL,1,NULL);
+  xTaskCreate(orange_led_task,"orange led cotroller",100,NULL,1,NULL);
+  xTaskCreate(red_led_task,"red led cotroller",100,NULL,2,NULL);
+  xTaskCreate(blue_led_task,"blue led cotroller",100,NULL,1,NULL);
   
   vTaskStartScheduler();
 
