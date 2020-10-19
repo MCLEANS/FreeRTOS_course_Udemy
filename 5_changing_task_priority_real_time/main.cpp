@@ -10,6 +10,7 @@
  * 1. The scheduler gives control to the highest priority unblocked task.
  * 2. When two tasks are of the same priority a round robin scheduling occurs giving each equal access to the CPU.
  * 3. To interract with tasks at runtime we need a handle;
+ * 4. A task can also change it own priority
  * ******************************************************************************/
 
 /***********************************************************************************
@@ -59,6 +60,7 @@ void blue_led_task(void* pvParameter){
   while(1){
     for(int i = 0; i < 5000000; i++){}
     blue_led.toggle();
+    vTaskPrioritySet(blue_led_handle,1);
   }
 }
 
