@@ -53,6 +53,7 @@ public:
 	void input_state(State state);
 	void digital_write(bool value);
 	bool digital_read(void) const;
+	void toggle();
 
 	~_GPIO();
 };
