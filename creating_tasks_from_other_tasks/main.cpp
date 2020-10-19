@@ -6,6 +6,10 @@
 
 #include "GPIO.h"
 
+/********************************************************
+ * In this example the orange_led_task is created inside the green_led_task
+ * *****************************************************/
+
 custom_libraries::clock_config system_clock;
 custom_libraries::_GPIO green_led(GPIOD,12);
 custom_libraries::_GPIO orange_led(GPIOD,13);
@@ -13,7 +17,7 @@ custom_libraries::_GPIO red_led(GPIOD,14);
 custom_libraries::_GPIO blue_led(GPIOD,15);
 
 void green_led_task(void* pvParameter){
-
+  orange_led.output_settings(custom_libraries::PUSH_PULL,custom_libraries::VERY_HIGH);
   while(1){
     for(int i = 0; i < 5000000; i++){}
     green_led.toggle();
@@ -55,15 +59,16 @@ int main(void) {
   blue_led.pin_mode(custom_libraries::OUTPUT);
 
   green_led.output_settings(custom_libraries::PUSH_PULL,custom_libraries::VERY_HIGH);
-  orange_led.output_settings(custom_libraries::PUSH_PULL,custom_libraries::VERY_HIGH);
   red_led.output_settings(custom_libraries::PUSH_PULL,custom_libraries::VERY_HIGH);
   blue_led.output_settings(custom_libraries::PUSH_PULL,custom_libraries::VERY_HIGH);
 
+  //Create tasks
   xTaskCreate(green_led_task,"Green led cotroller",100,NULL,1,NULL);
   xTaskCreate(orange_led_task,"Green led cotroller",100,NULL,1,NULL);
   xTaskCreate(red_led_task,"Green led cotroller",100,NULL,1,NULL);
   xTaskCreate(blue_led_task,"Green led cotroller",100,NULL,1,NULL);
   
+  //start scheduler (Kernel takes over from here)
   vTaskStartScheduler();
 
   while(1){
