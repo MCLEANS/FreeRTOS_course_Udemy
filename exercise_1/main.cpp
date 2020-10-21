@@ -6,6 +6,11 @@
 
 #include "GPIO.h"
 
+/******************************************************************
+ * In this exercise we practice how to create tasks and change
+ * task priorities at runtime
+ * ****************************************************************/
+
 custom_libraries::clock_config system_clock;
 custom_libraries::_GPIO green_led(GPIOD,12);
 custom_libraries::_GPIO orange_led(GPIOD,13);
