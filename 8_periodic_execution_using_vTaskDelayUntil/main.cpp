@@ -26,7 +26,7 @@ void green_led_task(void* pvParameter){
 }
 
 void orange_led_task(void* pvParameter){
-  TickType_t xLast_wakeup_time = xTaskGetTickCount();;
+  TickType_t xLast_wakeup_time = xTaskGetTickCount();
   TickType_t period = pdMS_TO_TICKS(50);
   while(1){
     orange_led.toggle();
