@@ -19,7 +19,7 @@ custom_libraries::_GPIO blue_led(GPIOD,15);
 void green_led_task(void* pvParameter){
 
   while(1){
-    for(int i = 0; i < 5000000; i++){}
+    vTaskDelay(pdMS_TO_TICKS(50));
     green_led.toggle();
 
   }
@@ -28,7 +28,7 @@ void green_led_task(void* pvParameter){
 void orange_led_task(void* pvParameter){
 
   while(1){
-    for(int i = 0; i < 5000000; i++){}
+    vTaskDelay(pdMS_TO_TICKS(50));
     orange_led.toggle();
   }
 }
@@ -36,7 +36,7 @@ void orange_led_task(void* pvParameter){
 void red_led_task(void* pvParameter){
 
   while(1){
-    for(int i = 0; i < 5000000; i++){}
+    vTaskDelay(pdMS_TO_TICKS(50));
     red_led.toggle();
   }
 }
@@ -44,7 +44,7 @@ void red_led_task(void* pvParameter){
 void blue_led_task(void* pvParameter){
 
   while(1){
-    for(int i = 0; i < 5000000; i++){}
+    vTaskDelay(pdMS_TO_TICKS(50));
     blue_led.toggle();
   }
 }
@@ -64,9 +64,9 @@ int main(void) {
   blue_led.output_settings(custom_libraries::PUSH_PULL,custom_libraries::VERY_HIGH);
 
   xTaskCreate(green_led_task,"Green led cotroller",100,NULL,1,NULL);
-  xTaskCreate(orange_led_task,"Green led cotroller",100,NULL,1,NULL);
-  xTaskCreate(red_led_task,"Green led cotroller",100,NULL,1,NULL);
-  xTaskCreate(blue_led_task,"Green led cotroller",100,NULL,1,NULL);
+  xTaskCreate(orange_led_task,"Green led cotroller",100,NULL,2,NULL);
+  xTaskCreate(red_led_task,"Green led cotroller",100,NULL,3,NULL);
+  xTaskCreate(blue_led_task,"Green led cotroller",100,NULL,4,NULL);
   
   vTaskStartScheduler();
 
