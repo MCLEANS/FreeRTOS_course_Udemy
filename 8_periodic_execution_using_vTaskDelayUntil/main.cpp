@@ -6,6 +6,10 @@
 
 #include "GPIO.h"
 
+/*****************************************************************
+ * 1. creating periodic tasks using vTaskDelayUntil()
+ * ***************************************************************/
+
 custom_libraries::clock_config system_clock;
 custom_libraries::_GPIO green_led(GPIOD,12);
 custom_libraries::_GPIO orange_led(GPIOD,13);
@@ -22,10 +26,11 @@ void green_led_task(void* pvParameter){
 }
 
 void orange_led_task(void* pvParameter){
-
+  TickType_t xLast_wakeup_time = xTaskGetTickCount();;
+  TickType_t period = pdMS_TO_TICKS(50);
   while(1){
-    for(int i = 0; i < 5000000; i++){}
     orange_led.toggle();
+    vTaskDelayUntil(&xLast_wakeup_time,period);
   }
 }
 
