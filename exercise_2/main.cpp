@@ -14,6 +14,7 @@ custom_libraries::_GPIO blue_led(GPIOD,15);
 
 /***************************************************
  *  1. Task suspension ans resumption
+ *  2. Periodic execution using vTaskDelayUntil()
  * *************************************************/
 
 //Create task handles
@@ -65,11 +66,13 @@ void red_led_task(void* pvParameter){
   }
 }
 
+// This task will be executed periodically every 200ms
 void blue_led_task(void* pvParameter){
-
+  TickType_t task_start_tick = xTaskGetTickCount();
   while(1){
     blue_led.toggle();
-    vTaskDelay(pdMS_TO_TICKS(500));
+    vTaskDelayUntil(&task_start_tick,pdMS_TO_TICKS(200));
+    
   }
 }
 
