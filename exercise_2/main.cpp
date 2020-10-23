@@ -12,10 +12,14 @@ custom_libraries::_GPIO orange_led(GPIOD,13);
 custom_libraries::_GPIO red_led(GPIOD,14);
 custom_libraries::_GPIO blue_led(GPIOD,15);
 
+/***************************************************
+ *  1. Task suspension ans resumption
+ * *************************************************/
+
 void green_led_task(void* pvParameter){
 
   while(1){
-    for(int i = 0; i < 5000000; i++){}
+    vTaskDelay(pdMS_TO_TICKS(500));
     green_led.toggle();
 
   }
@@ -24,7 +28,7 @@ void green_led_task(void* pvParameter){
 void orange_led_task(void* pvParameter){
 
   while(1){
-    for(int i = 0; i < 5000000; i++){}
+    vTaskDelay(pdMS_TO_TICKS(500));
     orange_led.toggle();
   }
 }
@@ -32,7 +36,7 @@ void orange_led_task(void* pvParameter){
 void red_led_task(void* pvParameter){
 
   while(1){
-    for(int i = 0; i < 5000000; i++){}
+    vTaskDelay(pdMS_TO_TICKS(500));
     red_led.toggle();
   }
 }
@@ -40,7 +44,7 @@ void red_led_task(void* pvParameter){
 void blue_led_task(void* pvParameter){
 
   while(1){
-    for(int i = 0; i < 5000000; i++){}
+    vTaskDelay(pdMS_TO_TICKS(500));
     blue_led.toggle();
   }
 }
