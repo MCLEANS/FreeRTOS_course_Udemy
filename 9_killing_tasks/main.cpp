@@ -19,9 +19,9 @@ TaskHandle_t red_led_handle;
 TaskHandle_t blue_led_handle;
 
 //system variables
-uint32_t suspension_counter = 0;
+uint32_t kill_counter = 0;
 uint32_t resumption_counter = 0;
-bool is_suspended = false;
+bool is_killed = false;
 
 void green_led_task(void* pvParameter){
 
@@ -36,10 +36,10 @@ void orange_led_task(void* pvParameter){
 
   while(1){
     orange_led.toggle();
-    if(is_suspended){
+    if(is_killed){
       resumption_counter++;
       if(resumption_counter >= 20){
-        is_suspended = false;
+        is_killed = false;
         resumption_counter = 0;
         vTaskResume(red_led_handle);
       }
@@ -52,11 +52,11 @@ void red_led_task(void* pvParameter){
 
   while(1){
     red_led.toggle();
-    suspension_counter ++;
-    if(suspension_counter >= 20){
-      suspension_counter = 0;
-      is_suspended = true;
-      vTaskSuspend(red_led_handle);
+    kill_counter ++;
+    if(kill_counter >= 20){
+      kill_counter = 0;
+      is_killed = true;
+      vTaskDelete(red_led_handle);
     }
     vTaskDelay(pdMS_TO_TICKS(500));
   }
