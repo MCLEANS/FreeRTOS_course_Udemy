@@ -30,9 +30,23 @@ void blue_led_task(void* pvParameter){
 }
 
 /**
+ * Timer Task Memory Callback
+ */ 
+extern "C" void vApplicationGetTimerTaskMemory(StaticTask_t **ppxTimerTaskTCBBuffer,
+                                    StackType_t **ppxTimerTaskStackBuffer,
+                                    uint32_t *pulTimerTaskStackSize){
+    static StaticTask_t xTimerTaskTCB;
+    static StackType_t uxTimerTaskStack[configTIMER_TASK_STACK_DEPTH];
+
+    *ppxTimerTaskTCBBuffer = &xTimerTaskTCB;
+    *ppxTimerTaskStackBuffer = uxTimerTaskStack;
+    *pulTimerTaskStackSize = configTIMER_TASK_STACK_DEPTH;
+}
+
+/**
  * Idle Task Memory Callback
  */ 
-void vApplicationGetIdleTaskMemory(StaticTask_t **ppxIdleTaskTCBBuffer,
+extern "C" void vApplicationGetIdleTaskMemory(StaticTask_t **ppxIdleTaskTCBBuffer,
                                     StackType_t **ppxIdleTaskStackBuffer,
                                     uint32_t *pulIdleTaskStackSize){
     static StaticTask_t xIdleTaskTCB;
@@ -42,6 +56,7 @@ void vApplicationGetIdleTaskMemory(StaticTask_t **ppxIdleTaskTCBBuffer,
     *ppxIdleTaskStackBuffer = uxIdleTaskStack;
     *pulIdleTaskStackSize = configMINIMAL_STACK_SIZE;
 }
+
 
 
 int main(void) {
@@ -64,6 +79,7 @@ int main(void) {
                     1,
                     blue_led_task_STACK,
                     &blue_led_task_buffer);
+  vTaskStartScheduler();
   
   while(1){
 
