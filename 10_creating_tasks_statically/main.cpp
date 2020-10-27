@@ -17,6 +17,32 @@ custom_libraries::_GPIO blue_led(GPIOD,15);
 StaticTask_t blue_led_task_buffer;
 StackType_t blue_led_task_STACK[100]; //StackType_t is defined as uint32_t 
 
+/**
+ * Blue LED Task
+ */
+
+void blue_led_task(void* pvParameter){
+
+  while(1){
+    blue_led.toggle();
+    vTaskDelay(pdMS_TO_TICKS(200));
+  }
+}
+
+/**
+ * Idle Task Memory Callback
+ */ 
+void vApplicationGetIdleTaskMemory(StaticTask_t **ppxIdleTaskTCBBuffer,
+                                    StackType_t **ppxIdleTaskStackBuffer,
+                                    uint32_t *pulIdleTaskStackSize){
+    static StaticTask_t xIdleTaskTCB;
+    static StackType_t uxIdleTaskStack[configMINIMAL_STACK_SIZE];
+
+    *ppxIdleTaskTCBBuffer = &xIdleTaskTCB;
+    *ppxIdleTaskStackBuffer = uxIdleTaskStack;
+    *pulIdleTaskStackSize = configMINIMAL_STACK_SIZE;
+}
+
 
 int main(void) {
 
@@ -31,7 +57,13 @@ int main(void) {
   red_led.output_settings(custom_libraries::PUSH_PULL,custom_libraries::VERY_HIGH);
   blue_led.output_settings(custom_libraries::PUSH_PULL,custom_libraries::VERY_HIGH);
 
-  taskcrea
+  xTaskCreateStatic(blue_led_task,
+                    "Blue Led Controller task",
+                    blue_led_task_STACK_SIZE,
+                    NULL,
+                    1,
+                    blue_led_task_STACK,
+                    &blue_led_task_buffer);
   
   while(1){
 
