@@ -30,6 +30,8 @@ int main(void) {
   orange_led.output_settings(custom_libraries::PUSH_PULL,custom_libraries::VERY_HIGH);
   red_led.output_settings(custom_libraries::PUSH_PULL,custom_libraries::VERY_HIGH);
   blue_led.output_settings(custom_libraries::PUSH_PULL,custom_libraries::VERY_HIGH);
+
+  taskcrea
   
   while(1){
 
