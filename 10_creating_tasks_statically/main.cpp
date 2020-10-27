@@ -13,6 +13,11 @@ custom_libraries::_GPIO orange_led(GPIOD,13);
 custom_libraries::_GPIO red_led(GPIOD,14);
 custom_libraries::_GPIO blue_led(GPIOD,15);
 
+#define blue_led_task_STACK_SIZE 100
+StaticTask_t blue_led_task_buffer;
+StackType_t blue_led_task_STACK[100]; //StackType_t is defined as uint32_t 
+
+
 int main(void) {
 
   system_clock.initialize();
