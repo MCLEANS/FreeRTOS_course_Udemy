@@ -4,6 +4,8 @@
 #include <task.h>
 #include <portmacro.h>
 
+#include "GPIO.h"
+
 custom_libraries::clock_config system_clock;
 
 extern "C" void led1_task(void* pvParameter){
