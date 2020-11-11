@@ -43,9 +43,11 @@ void blue_led_task(void* pvParameter){
 
 void red_led_task(void* pvParameter){
 
+  TickType_t last_wake_time = xTaskGetTickCount();
+  TickType_t delay_period = pdMS_TO_TICKS(450);
   while(1){
     red_led.toggle();
-    vTaskDelay(pdMS_TO_TICKS(500));
+    vTaskDelayUntil(&last_wake_time,delay_period);
   }
 }
 
