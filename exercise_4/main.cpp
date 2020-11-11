@@ -6,6 +6,10 @@
 
 #include "GPIO.h"
 
+/**
+ * Tasks can also be deleted, once a task is deleted it cannot be resumed
+ */
+
 custom_libraries::clock_config system_clock;
 custom_libraries::_GPIO green_led(GPIOD,12);
 custom_libraries::_GPIO orange_led(GPIOD,13);
