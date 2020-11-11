@@ -21,7 +21,7 @@ void green_led_task(void* pvParameter){
 
   while(1){
     green_led.toggle();
-    vTaskDelay(pdMS_TO_TICKS(500));
+    vTaskDelay(pdMS_TO_TICKS(100));
   }
 }
 
@@ -37,7 +37,7 @@ void blue_led_task(void* pvParameter){
 
   while(1){
     blue_led.toggle();
-    vTaskDelay(pdMS_TO_TICKS(500));
+    vTaskDelay(pdMS_TO_TICKS(300));
   }
 }
 
