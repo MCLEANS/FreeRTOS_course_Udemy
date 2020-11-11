@@ -7,36 +7,30 @@
 #include "GPIO.h"
 
 custom_libraries::clock_config system_clock;
-
-extern "C" void led1_task(void* pvParameter){
-  while(1){
-    for(volatile int i = 0; i < 2000000; i++){}
-    GPIOD->ODR ^= (1<<12);
-  }
-}
-
-extern "C" void led2_task(void* pvParameter){
-  while(1){
-    for(volatile int i = 0; i < 2000000; i++){}
-    GPIOD->ODR ^= (1<<13);
-  }
-}
+custom_libraries::_GPIO green_led(GPIOD,12);
+custom_libraries::_GPIO orange_led(GPIOD,13);
+custom_libraries::_GPIO red_led(GPIOD,14);
+custom_libraries::_GPIO blue_led(GPIOD,15);
 
 int main(void) {
+
   
   system_clock.initialize();
-  
-  RCC->AHB1ENR |= RCC_AHB1ENR_GPIODEN;
-  GPIOD->MODER |= GPIO_MODER_MODER12_0;
-  GPIOD->ODR |= GPIO_ODR_ODR_12;
-  GPIOD->MODER |= GPIO_MODER_MODER13_0;
-  GPIOD->ODR |= GPIO_ODR_ODR_13;
 
-  xTaskCreate(led1_task,"led 1 controller",100,NULL,1,NULL);
-  xTaskCreate(led2_task,"led 2 controller",100,NULL,1,NULL);
-  vTaskStartScheduler();
+  green_led.pin_mode(custom_libraries::OUTPUT);
+  orange_led.pin_mode(custom_libraries::OUTPUT);
+  red_led.pin_mode(custom_libraries::OUTPUT);
+  blue_led.pin_mode(custom_libraries::OUTPUT);
+
+  green_led.output_settings(custom_libraries::PUSH_PULL,custom_libraries::VERY_HIGH);
+  orange_led.output_settings(custom_libraries::PUSH_PULL,custom_libraries::VERY_HIGH);
+  red_led.output_settings(custom_libraries::PUSH_PULL,custom_libraries::VERY_HIGH);
+  blue_led.output_settings(custom_libraries::PUSH_PULL,custom_libraries::VERY_HIGH);
+
 
   while(1){
 
   }
 }
+
+
