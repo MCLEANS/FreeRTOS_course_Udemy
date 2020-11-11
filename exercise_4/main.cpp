@@ -7,7 +7,8 @@
 #include "GPIO.h"
 
 /**
- * Tasks can also be deleted, once a task is deleted it cannot be resumed
+ * 1. Tasks can also be deleted, once a task is deleted it cannot be resumed
+ * 2. It is also possible to change a task priority at run time
  */
 
 custom_libraries::clock_config system_clock;
@@ -16,6 +17,9 @@ custom_libraries::_GPIO orange_led(GPIOD,13);
 custom_libraries::_GPIO red_led(GPIOD,14);
 custom_libraries::_GPIO blue_led(GPIOD,15);
 
+/**
+ * Task handles for the various created task
+ */
 TaskHandle_t green_task_handle;
 TaskHandle_t orange_task_handle;
 TaskHandle_t red_task_handle;
@@ -25,6 +29,9 @@ uint8_t suspend_counter = 0;
 uint8_t resume_counter = 0;
 bool is_suspended = false;
 
+/**
+ * This task handles the green LED
+ */
 void green_led_task(void* pvParameter){
 
   while(1){
@@ -41,6 +48,9 @@ void green_led_task(void* pvParameter){
   }
 }
 
+/**
+ * This task handles the orange LED
+ */
 void orange_led_task(void* pvParameter){
 
   while(1){
@@ -55,6 +65,9 @@ void orange_led_task(void* pvParameter){
   }
 }
 
+/**
+ * This task handles the blue LED
+ */
 void blue_led_task(void* pvParameter){
 
   while(1){
@@ -63,6 +76,9 @@ void blue_led_task(void* pvParameter){
   }
 }
 
+/**
+ * This task handles the red LED
+ */
 void red_led_task(void* pvParameter){
 
   TickType_t last_wake_time = xTaskGetTickCount();
