@@ -8,6 +8,7 @@
 
 /**
  * 1. Enable Idle hook function in freeRTOS config file
+ * 2. To use the Idle task we need to use the callback known as vApplicationIdleHook
  */ 
 
 custom_libraries::clock_config system_clock;
@@ -23,8 +24,12 @@ void red_led_task(void* pvParameter){
   while(1){
     red_led.toggle();
     red_counter++;
-    vTaskDelay(pdMS_TO_TICKS(250));
+    vTaskDelay(pdMS_TO_TICKS(1000));
   }
+}
+
+extern "C" void vApplicationIdleHook(){
+    green_led.toggle();
 }
 
 int main(void) {
