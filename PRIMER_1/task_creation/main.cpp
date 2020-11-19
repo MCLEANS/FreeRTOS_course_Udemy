@@ -23,25 +23,29 @@ TaskHandle_t blue_handle;
 
 void green_led_task(void* pvParameter){
   while(1){
-
+    green_led.toggle();
+    vTaskDelay(pdMS_TO_TICKS(300));
   }
 }
 
 void orange_led_task(void* pvParameter){
   while(1){
-
+    orange_led.toggle();
+    vTaskDelay(pdMS_TO_TICKS(200));
   }
 }
 
 void red_led_task(void* pvParameter){
   while(1){
-
+    red_led.toggle();
+    vTaskDelay(pdMS_TO_TICKS(300));
   }
 }
 
 void blue_led_task(void* pvParameter){
   while(1){
-
+    blue_led.toggle();
+    vTaskDelay(pdMS_TO_TICKS(250));
   }
 }
 
