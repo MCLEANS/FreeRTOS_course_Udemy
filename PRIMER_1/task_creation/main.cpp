@@ -32,6 +32,7 @@ void orange_led_task(void* pvParameter){
   while(1){
     orange_led.toggle();
     vTaskDelay(pdMS_TO_TICKS(200));
+    vTaskPrioritySet(red_handle,3);
   }
 }
 
