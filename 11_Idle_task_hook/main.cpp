@@ -10,6 +10,7 @@
  * 1. Enable Idle hook function in freeRTOS config file
  * 2. To use the Idle task we need to use the callback known as vApplicationIdleHook
  * 3. The idle task will run whenever there is no task to be run.
+ * 4. the idle task has the lowest task priority.
  */ 
 
 custom_libraries::clock_config system_clock;
