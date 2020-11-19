@@ -43,10 +43,15 @@ void red_led_task(void* pvParameter){
   }
 }
 
+/**
+ * Periodic execution of a task
+ */
 void blue_led_task(void* pvParameter){
+  TickType_t last_wake_time = xTaskGetTickCount();
+  TickType_t task_period = pdMS_TO_TICKS(250);
   while(1){
     blue_led.toggle();
-    vTaskDelay(pdMS_TO_TICKS(250));
+    vTaskDelayUntil(&last_wake_time,task_period);
   }
 }
 
