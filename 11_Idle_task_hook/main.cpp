@@ -6,6 +6,10 @@
 
 #include "GPIO.h"
 
+/**
+ * 1. Enable Idle hook function in freeRTOS config file
+ */ 
+
 custom_libraries::clock_config system_clock;
 custom_libraries::_GPIO green_led(GPIOD,12);
 custom_libraries::_GPIO orange_led(GPIOD,13);
