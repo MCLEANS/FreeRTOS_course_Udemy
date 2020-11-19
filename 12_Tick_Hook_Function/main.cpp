@@ -6,6 +6,11 @@
 
 #include "GPIO.h"
 
+/**
+ * 1. Enable the tick hook function in the FreeRTOSConfig file.
+ * 2. Any function put at the Tick hook function will be executed at every tick interrupt
+ */
+
 custom_libraries::clock_config system_clock;
 custom_libraries::_GPIO green_led(GPIOD,12);
 custom_libraries::_GPIO orange_led(GPIOD,13);
@@ -37,12 +42,9 @@ void red_led_task(void* pvParameter){
   }
 }
 
-void blue_led_task(void* pvParameter){
 
-  while(1){
-    for(int i = 0; i < 5000000; i++){}
+extern "C" void vApplicationTickHook(void){
     blue_led.toggle();
-  }
 }
 
 int main(void) {
@@ -62,7 +64,7 @@ int main(void) {
   xTaskCreate(green_led_task,"Green led cotroller",100,NULL,1,NULL);
   xTaskCreate(orange_led_task,"Orange led cotroller",100,NULL,1,NULL);
   xTaskCreate(red_led_task,"Red led cotroller",100,NULL,1,NULL);
-  xTaskCreate(blue_led_task,"Blue led cotroller",100,NULL,1,NULL);
+
   
   vTaskStartScheduler();
 
