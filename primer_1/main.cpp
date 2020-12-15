@@ -6,33 +6,67 @@
 
 custom_libraries::clock_config system_clock;
 
-extern "C" void led1_task(void* pvParameter){
+TaskHandle_t accelerometer_angle_task;
+TaskHandle_t accelerometer_display_task;
+TaskHandle_t led_indicator_task;
+
+/**
+ * This tasks reads the angle and status form the accelerometer
+ */
+void read_accelerometer_status(void* pvParam){
   while(1){
-    for(volatile int i = 0; i < 2000000; i++){}
-    GPIOD->ODR ^= (1<<12);
+
   }
 }
 
-extern "C" void led2_task(void* pvParameter){
+/**
+ * This task displays the accelerometer values onto the LCD
+ */
+void display_accelerometer_values(void* pvParam){
+  while (1){
+
+  }
+  
+}
+
+/**
+ * This task uses the inbuilt LEDs to indicate the orientation of the Board
+ */ 
+void indicate_board_orientation(void* pvParam){
   while(1){
-    for(volatile int i = 0; i < 2000000; i++){}
-    GPIOD->ODR ^= (1<<13);
+
   }
 }
+
+
 
 int main(void) {
   
   system_clock.initialize();
-  
-  RCC->AHB1ENR |= RCC_AHB1ENR_GPIODEN;
-  GPIOD->MODER |= GPIO_MODER_MODER12_0;
-  GPIOD->ODR |= GPIO_ODR_ODR_12;
-  GPIOD->MODER |= GPIO_MODER_MODER13_0;
-  GPIOD->ODR |= GPIO_ODR_ODR_13;
 
-  xTaskCreate(led1_task,"led 1 controller",100,NULL,1,NULL);
-  xTaskCreate(led2_task,"led 2 controller",100,NULL,1,NULL);
-  vTaskStartScheduler();
+  xTaskCreate(read_accelerometer_status,
+              "Read angle values from accelerometer",
+              100,
+              NULL,
+              1,
+              &accelerometer_angle_task);
+
+  xTaskCreate(display_accelerometer_values,
+              "Displays accelerometer values on an LCD",
+              100,
+              NULL,
+              1,
+              &accelerometer_display_task);
+
+  xTaskCreate(indicate_board_orientation,
+              "Uses blinking LEDs to indicate the board orientation",
+              100,
+              NULL,
+              1,
+              &led_indicator_task);
+
+    vTaskStartScheduler();
+
 
   while(1){
 
