@@ -10,11 +10,43 @@
 
 custom_libraries::clock_config system_clock;
 
+/**
+ * Initialize LED objects
+ */ 
 custom_libraries::_GPIO green_led(GPIOD,12);
 custom_libraries::_GPIO orange_led(GPIOD,13);
 custom_libraries::_GPIO red_led(GPIOD,14);
 custom_libraries::_GPIO blue_led(GPIOD,15);
 
+/**
+ * Initialize NOKIA LCD object
+ */
+#define NOKIA_RST_PORT GPIOD
+#define NOKIA_RST_PIN 0
+#define NOKIA_CS_PORT GPIOD
+#define NOKIA_CS_PIN 1
+#define NOKIA_DC_PORT GPIOD
+#define NOKIA_DC_PIN 2
+
+custom_libraries::NOKIA_5110 NOKIA(SPI2,
+                                    GPIOB,
+                                    13,
+                                    15,
+                                    0,
+                                    64,
+                                    false,
+                                    false,
+                                    false,
+                                    NOKIA_CS_PORT,
+                                    NOKIA_CS_PIN,
+                                    NOKIA_RST_PORT,
+                                    NOKIA_RST_PIN,
+                                    NOKIA_DC_PORT,
+                                    NOKIA_DC_PIN);
+
+/**
+ * Running task handles
+ */
 TaskHandle_t accelerometer_angle_task;
 TaskHandle_t accelerometer_display_task;
 TaskHandle_t red_led_indicator_task;
@@ -35,6 +67,8 @@ void read_accelerometer_status(void* pvParam){
  * This task displays the accelerometer values onto the LCD
  */
 void display_accelerometer_values(void* pvParam){
+  NOKIA.print("INIT SUCCESS",5,3);
+  
   while (1){
 
   }
