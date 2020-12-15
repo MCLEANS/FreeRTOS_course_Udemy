@@ -10,9 +10,17 @@
 
 custom_libraries::clock_config system_clock;
 
+custom_libraries::_GPIO green_led(GPIOD,12);
+custom_libraries::_GPIO orange_led(GPIOD,13);
+custom_libraries::_GPIO red_led(GPIOD,14);
+custom_libraries::_GPIO blue_led(GPIOD,15);
+
 TaskHandle_t accelerometer_angle_task;
 TaskHandle_t accelerometer_display_task;
-TaskHandle_t led_indicator_task;
+TaskHandle_t red_led_indicator_task;
+TaskHandle_t blue_led_indicator_task;
+TaskHandle_t green_led_indicator_task;
+TaskHandle_t orange_led_indicator_task;
 
 /**
  * This tasks reads the angle and status form the accelerometer
@@ -34,15 +42,56 @@ void display_accelerometer_values(void* pvParam){
 }
 
 /**
- * This task uses the inbuilt LEDs to indicate the orientation of the Board
+ * This task uses the red LED to indicate the **** AXIS angle intensity
  */ 
-void indicate_board_orientation(void* pvParam){
-  while(1){
+void red_led_indicator(void* pvParam){
+  red_led.pin_mode(custom_libraries::OUTPUT);
+  red_led.output_settings(custom_libraries::PUSH_PULL,custom_libraries::VERY_HIGH);
 
+  while(1){
+    red_led.toggle();
+    vTaskDelay(pdMS_TO_TICKS(300));
   }
 }
 
+/**
+ * This task uses the blue LED to indicate the **** AXIS angle intensity
+ */ 
+void blue_led_indicator(void* pvParam){
+  blue_led.pin_mode(custom_libraries::OUTPUT);
+  blue_led.output_settings(custom_libraries::PUSH_PULL,custom_libraries::VERY_HIGH);
 
+  while(1){
+    blue_led.toggle();
+    vTaskDelay(pdMS_TO_TICKS(300));
+  }
+}
+
+/**
+ * This task uses the green LED to indicate the **** AXIS angle intensity
+ */ 
+void green_led_indicator(void* pvParam){
+  green_led.pin_mode(custom_libraries::OUTPUT);
+  green_led.output_settings(custom_libraries::PUSH_PULL,custom_libraries::VERY_HIGH);
+
+  while(1){
+    green_led.toggle();
+    vTaskDelay(pdMS_TO_TICKS(400));
+  }
+}
+
+/**
+ * This task uses the orange LED to indicate the **** AXIS angle intensity
+ */ 
+void orange_led_indicator(void* pvParam){
+  orange_led.pin_mode(custom_libraries::OUTPUT);
+  orange_led.output_settings(custom_libraries::PUSH_PULL,custom_libraries::VERY_HIGH);
+
+  while(1){
+    orange_led.toggle();
+    vTaskDelay(pdMS_TO_TICKS(200));
+  }
+}
 
 int main(void) {
   
@@ -62,14 +111,35 @@ int main(void) {
               1,
               &accelerometer_display_task);
 
-  xTaskCreate(indicate_board_orientation,
-              "Uses blinking LEDs to indicate the board orientation",
+  xTaskCreate(red_led_indicator,
+              "Uses red LED to indicate angle",
               100,
               NULL,
               1,
-              &led_indicator_task);
+              &red_led_indicator_task);
+              
+  xTaskCreate(blue_led_indicator,
+              "Uses blue LED to indicate angle",
+              100,
+              NULL,
+              1,
+              &blue_led_indicator_task);
 
-    vTaskStartScheduler();
+  xTaskCreate(orange_led_indicator,
+              "Uses orange LED to indicate angle",
+              100,
+              NULL,
+              1,
+              &orange_led_indicator_task);
+
+  xTaskCreate(green_led_indicator,
+              "Uses green LED to indicate angle",
+              100,
+              NULL,
+              1,
+              &green_led_indicator_task);
+
+   vTaskStartScheduler();
 
 
   while(1){
