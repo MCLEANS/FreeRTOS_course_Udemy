@@ -3,10 +3,20 @@
 #CXX SOURCE_FILES
 CXX_SOURCES += main.cpp
 CXX_SOURCES += clockconfig.cpp
+CXX_SOURCES += GPIO.cpp
+CXX_SOURCES += NOKIA_5110.cpp
+CXX_SOURCES += SPI.cpp
+CXX_SOURCES += LIS3DH.cpp
+CXX_SOURCES += SPI_16bit.cpp
 
 
 CXX_OBJS += main.o
 CXX_OBJS += clockconfig.o
+CXX_OBJS += GPIO.o
+CXX_OBJS += NOKIA_5110.o 
+CXX_OBJS += SPI.o 
+CXX_OBJS += LIS3DH.o 
+CXX_OBJS += SPI_16bit.o
 
 
 

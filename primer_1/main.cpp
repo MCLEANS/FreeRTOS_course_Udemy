@@ -4,6 +4,10 @@
 #include <task.h>
 #include <portmacro.h>
 
+#include "GPIO.h"
+#include "NOKIA_5110.h"
+#include "LIS3DH.h"
+
 custom_libraries::clock_config system_clock;
 
 TaskHandle_t accelerometer_angle_task;
