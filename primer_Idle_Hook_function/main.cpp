@@ -4,6 +4,12 @@
 #include <task.h>
 #include <portmacro.h>
 
+/**
+ * 1. An idle task will always have the lowest priority (priority 0)
+ * 2. It will only run when there are no higher priority tasks runining (tasks such as memory cleanup can be runnned here)
+ * 3. In order to use the idle hook function you have to enable it in the FreeRTOS config file.
+ */
+
 custom_libraries::clock_config system_clock;
 
 extern "C" void led1_task(void* pvParameter){
