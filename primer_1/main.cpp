@@ -4,9 +4,6 @@
 #include <task.h>
 #include <portmacro.h>
 
-#include <string>
-#include <string.h>
-
 #include "GPIO.h"
 #include "LIS3DH.h"
 
