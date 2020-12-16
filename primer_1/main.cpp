@@ -8,7 +8,6 @@
 #include <string.h>
 
 #include "GPIO.h"
-#include "NOKIA_5110.h"
 #include "LIS3DH.h"
 
 custom_libraries::clock_config system_clock;
