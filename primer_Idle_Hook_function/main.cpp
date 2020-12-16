@@ -13,13 +13,6 @@
 
 custom_libraries::clock_config system_clock;
 
-void led1_task(void* pvParameter){
-  while(1){
-    for(volatile int i = 0; i < 2000000; i++){}
-    GPIOD->ODR ^= (1<<12);
-  }
-}
-
 void led2_task(void* pvParameter){
   while(1){
     GPIOD->ODR ^= (1<<13);
@@ -28,7 +21,8 @@ void led2_task(void* pvParameter){
 }
 
 extern "C" void vApplicationIdleHook(void){
-
+    for(volatile int i = 0; i < 2000000; i++){}
+    GPIOD->ODR ^= (1<<12);
 }
 
 int main(void) {
@@ -41,7 +35,7 @@ int main(void) {
   GPIOD->MODER |= GPIO_MODER_MODER13_0;
   GPIOD->ODR |= GPIO_ODR_ODR_13;
 
-  xTaskCreate(led1_task,"led 1 controller",100,NULL,1,NULL);
+  xTaskCreate(led2_task,"led 2 controller",100,NULL,1,NULL);
   vTaskStartScheduler();
 
   while(1){
