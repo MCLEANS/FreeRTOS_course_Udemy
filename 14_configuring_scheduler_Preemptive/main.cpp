@@ -6,6 +6,12 @@
 
 #include "GPIO.h"
 
+/**
+ * 1. When the kernel is configured as completely pre-emptive it will always run the task with the highest priority unblocked state.
+ *    When two tasks are of the same priority there will be no time sharing between the tasks but the task that was created first will be allowed
+ *    to run without pre-emption form another task with the same priority
+ */ 
+
 custom_libraries::clock_config system_clock;
 custom_libraries::_GPIO green_led(GPIOD,12);
 custom_libraries::_GPIO orange_led(GPIOD,13);
@@ -59,10 +65,11 @@ int main(void) {
   red_led.output_settings(custom_libraries::PUSH_PULL,custom_libraries::VERY_HIGH);
   blue_led.output_settings(custom_libraries::PUSH_PULL,custom_libraries::VERY_HIGH);
 
-  xTaskCreate(green_led_task,"Green led cotroller",100,NULL,1,NULL);
+  xTaskCreate(blue_led_task,"Blue led cotroller",100,NULL,1,NULL);
+  xTaskCreate(green_led_task,"Green led cotroller",100,NULL,2,NULL);
   xTaskCreate(orange_led_task,"Orange led cotroller",100,NULL,1,NULL);
   xTaskCreate(red_led_task,"Red led cotroller",100,NULL,1,NULL);
-  xTaskCreate(blue_led_task,"Blue led cotroller",100,NULL,1,NULL);
+  
   
   vTaskStartScheduler();
 
