@@ -10,6 +10,9 @@
  * 1. When the kernel is configured as completely pre-emptive it will always run the task with the highest priority unblocked state.
  *    When two tasks are of the same priority there will be no time sharing between the tasks but the task that was created first will be allowed
  *    to run without pre-emption form another task with the same priority
+ * 2. The taskYIELD() API can be used to create time sharing between tasks of the same priority.
+ *    When a task yields it means it has completed executing and can relenquish access to the CPU to another task of the same priority
+ * 
  */ 
 
 custom_libraries::clock_config system_clock;
@@ -23,6 +26,7 @@ void green_led_task(void* pvParameter){
   while(1){
     for(int i = 0; i < 5000000; i++){}
     green_led.toggle();
+    taskYIELD();
 
   }
 }
@@ -32,6 +36,7 @@ void orange_led_task(void* pvParameter){
   while(1){
     for(int i = 0; i < 5000000; i++){}
     orange_led.toggle();
+    taskYIELD();
   }
 }
 
@@ -40,6 +45,7 @@ void red_led_task(void* pvParameter){
   while(1){
     for(int i = 0; i < 5000000; i++){}
     red_led.toggle();
+    taskYIELD();
   }
 }
 
@@ -48,6 +54,7 @@ void blue_led_task(void* pvParameter){
   while(1){
     for(int i = 0; i < 5000000; i++){}
     blue_led.toggle();
+    taskYIELD();
   }
 }
 
