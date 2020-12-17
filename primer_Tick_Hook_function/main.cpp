@@ -7,7 +7,7 @@
 #include "GPIO.h"
 
 /**
- * 1. The tick hook function is executed at every tick of the FreeRTOS
+ * 1. The tick hook function is executed at every tick Interrupt of the FreeRTOS
  * 2. In order to use the Tick Hook function it has to be enabled in the FreeRTOSConfig.h
  */ 
 
