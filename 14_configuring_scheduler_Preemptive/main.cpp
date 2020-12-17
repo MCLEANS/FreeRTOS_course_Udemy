@@ -21,8 +21,8 @@ custom_libraries::_GPIO blue_led(GPIOD,15);
 void green_led_task(void* pvParameter){
 
   while(1){
-    for(int i = 0; i < 5000000; i++){}
     green_led.toggle();
+    vTaskDelay(pdMS_TO_TICKS(400));
 
   }
 }
@@ -30,24 +30,24 @@ void green_led_task(void* pvParameter){
 void orange_led_task(void* pvParameter){
 
   while(1){
-    for(int i = 0; i < 5000000; i++){}
     orange_led.toggle();
+    vTaskDelay(pdMS_TO_TICKS(200));
   }
 }
 
 void red_led_task(void* pvParameter){
 
   while(1){
-    for(int i = 0; i < 5000000; i++){}
     red_led.toggle();
+    vTaskDelay(pdMS_TO_TICKS(300));
   }
 }
 
 void blue_led_task(void* pvParameter){
 
   while(1){
-    for(int i = 0; i < 5000000; i++){}
     blue_led.toggle();
+    vTaskDelay((pdMS_TO_TICKS(400)));
   }
 }
 
