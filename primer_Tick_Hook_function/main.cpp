@@ -42,6 +42,9 @@ void red_led_task(void* pvParameter){
   }
 }
 
+extern "C" void vApplicationTickHook(void){
+    blue_led.toggle();
+}
 
 
 int main(void) {
