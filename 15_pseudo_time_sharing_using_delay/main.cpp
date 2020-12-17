@@ -10,6 +10,9 @@
  * 1. When the kernel is configured as completely pre-emptive it will always run the task with the highest priority unblocked state.
  *    When two tasks are of the same priority there will be no time sharing between the tasks but the task that was created first will be allowed
  *    to run without pre-emption form another task with the same priority
+ * 
+ * 2. We can use RTOS delays to create a pseudo time sharing scheme by blocking tasks. This type of time sharing is however not deterministic.
+ *    In future lessons we shall go about how to use a round robin and the pre-emptive scheduler
  */ 
 
 custom_libraries::clock_config system_clock;
@@ -21,8 +24,8 @@ custom_libraries::_GPIO blue_led(GPIOD,15);
 void green_led_task(void* pvParameter){
 
   while(1){
-    for(int i = 0; i < 5000000; i++){}
     green_led.toggle();
+    vTaskDelay(pdMS_TO_TICKS(400));
 
   }
 }
@@ -30,24 +33,27 @@ void green_led_task(void* pvParameter){
 void orange_led_task(void* pvParameter){
 
   while(1){
-    for(int i = 0; i < 5000000; i++){}
     orange_led.toggle();
+    vTaskDelay(pdMS_TO_TICKS(250));
+
   }
 }
 
 void red_led_task(void* pvParameter){
 
   while(1){
-    for(int i = 0; i < 5000000; i++){}
     red_led.toggle();
+    vTaskDelay(pdMS_TO_TICKS(100));
+
   }
 }
 
 void blue_led_task(void* pvParameter){
 
   while(1){
-    for(int i = 0; i < 5000000; i++){}
     blue_led.toggle();
+    vTaskDelay(pdMS_TO_TICKS(200));
+
   }
 }
 
