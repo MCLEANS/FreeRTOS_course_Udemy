@@ -4,6 +4,8 @@
 #include <task.h>
 #include <portmacro.h>
 
+#include <semphr.h>
+
 #include "USART.h"
 #include "GPIO.h"
 
@@ -41,11 +43,19 @@ custom_libraries::_GPIO blue_led(GPIOD,15);
 TaskHandle_t greetings_task;
 TaskHandle_t notification_task;
 
+/**
+ * Semaphore handles
+ */
+SemaphoreHandle_t uart_semaphore;
+
 void send_greeting(void* pvParameter){
   char greeting[] = "Hello World";
   while(1){
-    serial.println(greeting);
-    orange_led.toggle();
+    if(xSemaphoreTake(uart_semaphore,portMAX_DELAY) != pdFALSE){
+      serial.println(greeting);
+      orange_led.toggle();
+      xSemaphoreGive(uart_semaphore);
+    }      
     vTaskDelay(pdMS_TO_TICKS(50));
   }
 }
@@ -53,8 +63,11 @@ void send_greeting(void* pvParameter){
 void send_notification(void* pvParameter){
   char notification[] = "Sending notification";
   while(1){
-    serial.println(notification);
-    green_led.toggle();
+    if(xSemaphoreTake(uart_semaphore,portMAX_DELAY) != pdFALSE){
+      serial.println(notification);
+      green_led.toggle();
+      xSemaphoreGive(uart_semaphore);
+    }
     vTaskDelay(pdMS_TO_TICKS(50));
   }
 }
@@ -74,6 +87,16 @@ int main(void) {
   blue_led.output_settings(custom_libraries::PUSH_PULL,custom_libraries::VERY_HIGH);
   red_led.pin_mode(custom_libraries::OUTPUT);
   red_led.output_settings(custom_libraries::PUSH_PULL,custom_libraries::VERY_HIGH);
+
+  /**
+   * Create USART3 semaphore
+   */
+  uart_semaphore = xSemaphoreCreateBinary();
+
+  /**
+   * Remember to give semaphore before attempting to take
+   */
+  xSemaphoreGive(uart_semaphore);
 
   /**
    * Create project tasks 
