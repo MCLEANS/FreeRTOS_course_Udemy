@@ -57,7 +57,6 @@ void send_notification(void* pvParameter){
 }
 
 int main(void) {
-  
   system_clock.initialize();
   serial.initialize();
 
