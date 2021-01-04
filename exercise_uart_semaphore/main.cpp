@@ -10,8 +10,11 @@
 #include "GPIO.h"
 
 /**
-* 1.Usage of semaphores for microcontroller resource sharing.
-*/ 
+ * 1. using semaphore for shared resources.
+ * 2. Binary semaphores are suitable for synchorisation of tasks
+ * 2. Mutexes are suitable for mutually exclusive tasks
+ */
+
 
 
 /**
@@ -91,7 +94,7 @@ int main(void) {
   /**
    * Create USART3 semaphore
    */
-  uart_semaphore = xSemaphoreCreateBinary();
+  uart_semaphore = xSemaphoreCreateMutex();
 
   /**
    * Remember to give semaphore before attempting to take
