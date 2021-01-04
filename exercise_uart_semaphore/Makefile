@@ -4,11 +4,12 @@
 CXX_SOURCES += main.cpp
 CXX_SOURCES += clockconfig.cpp
 CXX_SOURCES += USART.cpp
-
+CXX_SOURCES += GPIO.cpp
 
 CXX_OBJS += main.o
 CXX_OBJS += clockconfig.o
 CXX_OBJS += USART.o
+CXX_OBJS += GPIO.o
 
 
 
