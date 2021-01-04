@@ -15,10 +15,9 @@
 /**
  * Define UART pins and baudrate
  */
-#define SERIAL_RX 10
-#define SERIAL_TX 9
+#define SERIAL_RX 11
+#define SERIAL_TX 10
 #define BAUDRATE 9600
-
 /**
  * Initialization of system clock object
  */
@@ -27,13 +26,7 @@ custom_libraries::clock_config system_clock;
 /**
  * Initialization of UART object
  */
-custom_libraries::USART serial(USART1,
-                              GPIOA,
-                              custom_libraries::_DMA2,
-                              DMA2_Stream2,
-                              SERIAL_RX,
-                              SERIAL_TX,
-                              BAUDRATE);
+custom_libraries::USART serial(USART3,GPIOC,custom_libraries::_DMA1,DMA1_Stream1,SERIAL_RX,SERIAL_TX,BAUDRATE);
 /**
  * Initialize GPIO pin objects
  */
@@ -53,7 +46,7 @@ void send_greeting(void* pvParameter){
   while(1){
     serial.println(greeting);
     orange_led.toggle();
-    vTaskDelay(pdMS_TO_TICKS(500));
+    vTaskDelay(pdMS_TO_TICKS(50));
   }
 }
 
@@ -62,7 +55,7 @@ void send_notification(void* pvParameter){
   while(1){
     serial.println(notification);
     green_led.toggle();
-    vTaskDelay(pdMS_TO_TICKS(500));
+    vTaskDelay(pdMS_TO_TICKS(50));
   }
 }
 
