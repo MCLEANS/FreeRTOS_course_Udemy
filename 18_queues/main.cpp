@@ -10,6 +10,7 @@
 /**
  * 1. QUEUEs are used for inter-task communication.
  * 2. Data is loaded onto a FIFO buffer by one task and read out by another task
+ * 3. Note: use sprintf() to convert int to char array. (stdio.h)
  */
 
 /**
@@ -37,6 +38,30 @@ custom_libraries::_GPIO orange_led(GPIOD,13);
 custom_libraries::_GPIO red_led(GPIOD,14);
 custom_libraries::_GPIO blue_led(GPIOD,15);
 
+/**
+ * Task handles
+ */
+TaskHandle_t sensor_task;
+TaskHandle_t logger_task;
+
+/**
+ * Define project tasks
+ */
+
+void logger(void* pvParameter){
+  char sensor_values[10];
+  while(1){
+
+  }
+}
+
+void read_sensor(void* pvParameter){
+  uint32_t sensor_value = 0;
+  while(1){
+
+  }
+}
+
 
 int main(void) {
   /**
@@ -57,12 +82,33 @@ int main(void) {
   red_led.pin_mode(custom_libraries::OUTPUT);
   blue_led.pin_mode(custom_libraries::OUTPUT);
 
+  /**
+   * Set GPIO output pin settings
+   */
   green_led.output_settings(custom_libraries::PUSH_PULL,custom_libraries::MEDUIM);
   orange_led.output_settings(custom_libraries::PUSH_PULL,custom_libraries::MEDUIM);
   red_led.output_settings(custom_libraries::PUSH_PULL,custom_libraries::MEDUIM);
   red_led.output_settings(custom_libraries::PUSH_PULL,custom_libraries::MEDUIM);
 
+  /**
+   * Create tasks
+   */
+  xTaskCreate(logger,
+              "Logging Task",
+              100,
+              NULL,
+              1,
+              &logger_task);
+
+  xTaskCreate(read_sensor,
+              "Sensor Reading task",
+              100,
+              NULL,
+              1,
+              &sensor_task);
+
   while(1){
 
   }
+
 }
