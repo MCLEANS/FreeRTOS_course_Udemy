@@ -4,6 +4,9 @@
 #include <task.h>
 #include <portmacro.h>
 
+#include <queue.h>
+#include <stdio.h>
+
 #include "GPIO.h"
 #include "USART.h"
 
@@ -45,20 +48,47 @@ TaskHandle_t sensor_task;
 TaskHandle_t logger_task;
 
 /**
+ * Queue handles
+ */
+QueueHandle_t logger_queue;
+
+/**
  * Define project tasks
  */
 
 void logger(void* pvParameter){
-  char sensor_values[10];
+  char sensor_values[10] = "Hello";
+  int sensor_val = 0;
   while(1){
+    if(logger_queue != NULL){
+      if(xQueueReceive(logger_queue, &sensor_val,portMAX_DELAY) != pdFALSE){
+        blue_led.toggle();
+        sprintf(sensor_values,"%d",sensor_val);
+        serial.println(sensor_values);
 
+      }
+      else{
+        red_led.toggle();
+      }
+    }
+    vTaskDelay(pdMS_TO_TICKS(100));
   }
 }
 
 void read_sensor(void* pvParameter){
-  uint32_t sensor_value = 0;
+  int sensor_value = 0;
   while(1){
-
+    sensor_value ++;
+    if(logger_queue != NULL){
+      if(xQueueSend(logger_queue,(void*) &sensor_value,portMAX_DELAY) != pdFALSE){
+        green_led.toggle();
+      }
+      else{
+        orange_led.toggle();
+      }
+    
+    }
+    vTaskDelay(pdMS_TO_TICKS(50));
   }
 }
 
@@ -91,21 +121,28 @@ int main(void) {
   red_led.output_settings(custom_libraries::PUSH_PULL,custom_libraries::MEDUIM);
 
   /**
+   * Create queue for logging data
+   */
+  logger_queue =  xQueueCreate(10,sizeof(int));
+
+  /**
    * Create tasks
    */
   xTaskCreate(logger,
               "Logging Task",
-              100,
+              1024,
               NULL,
               1,
               &logger_task);
 
   xTaskCreate(read_sensor,
               "Sensor Reading task",
-              100,
+              1024,
               NULL,
               1,
               &sensor_task);
+
+  vTaskStartScheduler();
 
   while(1){
 
