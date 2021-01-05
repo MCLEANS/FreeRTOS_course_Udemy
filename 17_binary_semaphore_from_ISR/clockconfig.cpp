@@ -27,6 +27,8 @@ void clock_config::initialize(){
 	FLASH->ACR |= FLASH_ACR_LATENCY_5WS;
 	FLASH->ACR |= FLASH_ACR_PRFTEN;
 
+	RCC->CR &= ~RCC_CR_PLLON;
+
 	//Enable HSI
 	RCC->CR |= RCC_CR_HSION;
 	//check if HSI is ready
@@ -49,7 +51,7 @@ void clock_config::initialize(){
 	RCC->CFGR |= RCC_CFGR_PPRE1_DIV4;
 	//Set APB2 clock frequency to 84MHz(prescaler of 2)
 	RCC->CFGR &= ~RCC_CFGR_PPRE2;
-	RCC->CFGR |= RCC_CFGR_PPRE2_DIV2;
+	RCC->CFGR |= RCC_CFGR_PPRE2_DIV1;
 	//Enable PLL
 	RCC->CR |= RCC_CR_PLLON;
 	//check if PLL is ready

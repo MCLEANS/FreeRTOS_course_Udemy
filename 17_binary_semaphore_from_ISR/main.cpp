@@ -11,8 +11,8 @@
 custom_libraries::clock_config system_clock;
 custom_libraries::_GPIO green_led(GPIOD,12);
 custom_libraries::_GPIO orange_led(GPIOD,13);
-custom_libraries::_GPIO red_led(GPIOD,14);
-custom_libraries::_GPIO blue_led(GPIOD,15);
+custom_libraries::_GPIO red_led(GPIOA,6);
+custom_libraries::_GPIO blue_led(GPIOA,7);
 
 /**
  * Initialize binary semaphore
@@ -21,9 +21,9 @@ SemaphoreHandle_t delay_semaphore;
 /**
  * initialize the timer object
  */
-custom_libraries::Timer_configuration delay_timer(TIM3,
+custom_libraries::Timer_configuration delay_timer(TIM1,
                                                   62000,
-                                                  677);
+                                                  (677*2));
 
 void green_led_task(void* pvParameter){
 
@@ -59,12 +59,12 @@ void blue_led_task(void* pvParameter){
   }
 }
 
-extern "C" void TIM3_IRQHandler(void){
+extern "C" void TIM1_UP_TIM10_IRQHandler (void){
   static BaseType_t xHigherPriorityTaskWoken;
   xHigherPriorityTaskWoken = pdFALSE;
 
-  if(TIM3->SR & TIM_SR_UIF){
-    TIM3->SR &= ~(TIM_SR_UIF);
+  if(TIM1->SR & TIM_SR_UIF){
+    TIM1->SR &= ~(TIM_SR_UIF);
     xSemaphoreGiveFromISR(delay_semaphore,&xHigherPriorityTaskWoken);
   
     
@@ -91,15 +91,15 @@ int main(void) {
   red_led.output_settings(custom_libraries::PUSH_PULL,custom_libraries::VERY_HIGH);
   blue_led.output_settings(custom_libraries::PUSH_PULL,custom_libraries::VERY_HIGH);
 
-  xTaskCreate(green_led_task,"Green led cotroller",100,NULL,1,NULL);
-  xTaskCreate(orange_led_task,"Orange led cotroller",100,NULL,1,NULL);
+ // xTaskCreate(green_led_task,"Green led cotroller",100,NULL,1,NULL);
+ // xTaskCreate(orange_led_task,"Orange led cotroller",100,NULL,1,NULL);
   xTaskCreate(red_led_task,"Red led cotroller",100,NULL,1,NULL);
   xTaskCreate(blue_led_task,"Blue led cotroller",100,NULL,1,NULL);
 
   delay_semaphore = xSemaphoreCreateBinary();
 
-  NVIC_SetPriority(TIM3_IRQn,0x06);
-  NVIC_EnableIRQ(TIM3_IRQn);
+  NVIC_SetPriority(TIM1_UP_TIM10_IRQn,0x06);
+  NVIC_EnableIRQ(TIM1_UP_TIM10_IRQn);
 
 
   vTaskStartScheduler();
