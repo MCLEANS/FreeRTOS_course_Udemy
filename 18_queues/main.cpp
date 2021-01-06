@@ -5,7 +5,7 @@
 #include <portmacro.h>
 
 #include <queue.h>
-#include <stdio.h>
+#include <string.h>
 
 #include "GPIO.h"
 #include "USART.h"
@@ -57,13 +57,13 @@ QueueHandle_t logger_queue;
  */
 
 void logger(void* pvParameter){
-  char sensor_values[10] = "Hello";
+  char sensor_values[10];
   int sensor_val = 0;
   while(1){
     if(logger_queue != NULL){
       if(xQueueReceive(logger_queue, &sensor_val,portMAX_DELAY) != pdFALSE){
         blue_led.toggle();
-        sprintf(sensor_values,"%d",sensor_val);
+        memcpy(sensor_values,(char*)&sensor_val,sizeof(int));
         serial.println(sensor_values);
       }
       else{
@@ -129,14 +129,14 @@ int main(void) {
    */
   xTaskCreate(logger,
               "Logging Task",
-              1024,
+              256,
               NULL,
               1,
               &logger_task);
 
   xTaskCreate(read_sensor,
               "Sensor Reading task",
-              1024,
+              256,
               NULL,
               1,
               &sensor_task);
