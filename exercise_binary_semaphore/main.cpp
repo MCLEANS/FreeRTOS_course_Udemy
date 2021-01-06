@@ -41,13 +41,20 @@ SemaphoreHandle_t button_semaphore;
  */
 void blinky(void* pvParameter){
   while(1){
-
+    if(xSemaphoreTake(button_semaphore,portMAX_DELAY) != pdFALSE){
+      blue_led.toggle();
+    }
   }
 }
 
 void button_press(void* pvParameter){
   while(1){
-
+    if(user_button.digital_read()){
+      if(xSemaphoreGive(button_semaphore) != pdFALSE){
+        green_led.toggle();
+      }
+    }
+    vTaskDelay(pdMS_TO_TICKS(100));
   }
 }
 
@@ -71,7 +78,13 @@ int main(void) {
    * Cofigure user button as input
    */
   user_button.pin_mode(custom_libraries::INPUT);
-  user_button.input_state(custom_libraries::PULL_UP);
+  user_button.input_state(custom_libraries::PULL_DOWN);
+
+  /**
+   * Create button semaphore
+   */
+  button_semaphore =  xSemaphoreCreateBinary();
+  xSemaphoreGive(button_semaphore);
 
   /**
    * Create object tasks
@@ -89,6 +102,8 @@ int main(void) {
               NULL,
               1,
               &button_press_task);
+
+  vTaskStartScheduler();
 
   while(1){
 
