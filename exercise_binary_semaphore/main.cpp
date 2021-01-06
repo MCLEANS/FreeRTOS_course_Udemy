@@ -4,7 +4,14 @@
 #include <task.h>
 #include <portmacro.h>
 
+#include <semphr.h>
+
 #include "GPIO.h"
+
+/**
+ * Binary semaphores are suitably used for synchronisation between task and task 
+ * or between an Interrupt Service Routine and a task.
+ */
 
 custom_libraries::clock_config system_clock;
 custom_libraries::_GPIO green_led(GPIOD,12);
@@ -12,43 +19,44 @@ custom_libraries::_GPIO orange_led(GPIOD,13);
 custom_libraries::_GPIO red_led(GPIOD,14);
 custom_libraries::_GPIO blue_led(GPIOD,15);
 
-void green_led_task(void* pvParameter){
+/**
+ * Initialize button object.
+ */
+custom_libraries::_GPIO user_button(GPIOA,0);
 
+/**
+ * Task handles
+ */
+TaskHandle_t button_press_task;
+TaskHandle_t blinky_task;
+
+
+/**
+ * Semaphore handles
+ */
+SemaphoreHandle_t button_semaphore;
+
+/**
+ * Project tasks
+ */
+void blinky(void* pvParameter){
   while(1){
-    for(int i = 0; i < 5000000; i++){}
-    green_led.toggle();
 
   }
 }
 
-void orange_led_task(void* pvParameter){
-
+void button_press(void* pvParameter){
   while(1){
-    for(int i = 0; i < 5000000; i++){}
-    orange_led.toggle();
-  }
-}
 
-void red_led_task(void* pvParameter){
-
-  while(1){
-    for(int i = 0; i < 5000000; i++){}
-    red_led.toggle();
-  }
-}
-
-void blue_led_task(void* pvParameter){
-
-  while(1){
-    for(int i = 0; i < 5000000; i++){}
-    blue_led.toggle();
   }
 }
 
 int main(void) {
   
   system_clock.initialize();
-  //configure LEDs as output
+  /**
+   * Configure LEDs as output
+   */
   green_led.pin_mode(custom_libraries::OUTPUT);
   orange_led.pin_mode(custom_libraries::OUTPUT);
   red_led.pin_mode(custom_libraries::OUTPUT);
@@ -59,12 +67,28 @@ int main(void) {
   red_led.output_settings(custom_libraries::PUSH_PULL,custom_libraries::VERY_HIGH);
   blue_led.output_settings(custom_libraries::PUSH_PULL,custom_libraries::VERY_HIGH);
 
-  xTaskCreate(green_led_task,"Green led cotroller",100,NULL,1,NULL);
-  xTaskCreate(orange_led_task,"Orange led cotroller",100,NULL,1,NULL);
-  xTaskCreate(red_led_task,"Red led cotroller",100,NULL,1,NULL);
-  xTaskCreate(blue_led_task,"Blue led cotroller",100,NULL,1,NULL);
-  
-  vTaskStartScheduler();
+  /**
+   * Cofigure user button as input
+   */
+  user_button.pin_mode(custom_libraries::INPUT);
+  user_button.input_state(custom_libraries::PULL_UP);
+
+  /**
+   * Create object tasks
+   */
+  xTaskCreate(blinky,
+              "Led blinking task",
+              100,
+              NULL,
+              1,
+              &blinky_task);
+
+  xTaskCreate(button_press,
+              "Button press task",
+              100,
+              NULL,
+              1,
+              &button_press_task);
 
   while(1){
 
