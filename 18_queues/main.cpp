@@ -65,7 +65,6 @@ void logger(void* pvParameter){
         blue_led.toggle();
         sprintf(sensor_values,"%d",sensor_val);
         serial.println(sensor_values);
-
       }
       else{
         red_led.toggle();
