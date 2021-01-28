@@ -12,6 +12,12 @@ custom_libraries::_GPIO orange_led(GPIOD,13);
 custom_libraries::_GPIO red_led(GPIOD,14);
 custom_libraries::_GPIO blue_led(GPIOD,15);
 
+/**
+ * 1. Get accelerometer values from one task and push the values to LCD display task
+ * via a queue.
+ * 2. Use a semaphore to toggle an LED each time a valid accelerometer value is read.
+ */
+
 void green_led_task(void* pvParameter){
 
   while(1){
