@@ -32,25 +32,31 @@ TaskHandle_t display_task;
  */
 void red_indicator(void* pvParameter){
   while(1){
+    red_led.toggle();
+    vTaskDelay(pdMS_TO_TICKS(100));
 
   }
 }
 
 void blue_indicator(void* pvParameter){
   while(1){
+    blue_led.toggle();
+    vTaskDelay(pdMS_TO_TICKS(200));
 
   }
 }
 
 void orange_indicator(void* pvParameter){
   while(1){
-
+    orange_led.toggle();
+    vTaskDelay(pdMS_TO_TICKS(200));
   }
 }
 
 void green_indicator(void* pvParameter){
   while(1){
-
+    green_led.toggle();
+    vTaskDelay(pdMS_TO_TICKS(150));
   }
 }
 
