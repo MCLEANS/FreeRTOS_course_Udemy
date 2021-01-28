@@ -18,7 +18,7 @@ custom_libraries::_GPIO red_led(GPIOD,14);
 custom_libraries::_GPIO blue_led(GPIOD,15);
 
 /**
- * Task handles
+ * System task handles
  */
 TaskHandle_t red_indicator_task;
 TaskHandle_t blue_inidator_task;
@@ -27,8 +27,50 @@ TaskHandle_t green_indicator_task;
 TaskHandle_t accelerometer_task;
 TaskHandle_t display_task;
 
+/**
+ * System tasks
+ */
+void red_indicator(void* pvParameter){
+  while(1){
+
+  }
+}
+
+void blue_indicator(void* pvParameter){
+  while(1){
+
+  }
+}
+
+void orange_indicator(void* pvParameter){
+  while(1){
+
+  }
+}
+
+void green_indicator(void* pvParameter){
+  while(1){
+
+  }
+}
+
+void accelerometer_handler(void* pvParameter){
+  while(1){
+
+  }
+}
+
+void display_handler(void* pvParameter){
+  while(1){
+
+  }
+}
+
 int main(void) {
-  
+
+  /**
+   * Initialization of the system clock
+   */
   system_clock.initialize();
   /**
    * Configure LED as output
@@ -37,11 +79,54 @@ int main(void) {
   orange_led.pin_mode(custom_libraries::OUTPUT);
   red_led.pin_mode(custom_libraries::OUTPUT);
   blue_led.pin_mode(custom_libraries::OUTPUT);
-
+  /**
+   * Configuration of LED output settings
+   */
   green_led.output_settings(custom_libraries::PUSH_PULL,custom_libraries::VERY_HIGH);
   orange_led.output_settings(custom_libraries::PUSH_PULL,custom_libraries::VERY_HIGH);
   red_led.output_settings(custom_libraries::PUSH_PULL,custom_libraries::VERY_HIGH);
   blue_led.output_settings(custom_libraries::PUSH_PULL,custom_libraries::VERY_HIGH);
+  /**
+   * Create system tasks
+   */
+  xTaskCreate(red_indicator,
+              "Red LED Indicator",
+              100,
+              NULL,
+              1,
+              &red_indicator_task);
+  xTaskCreate(blue_indicator,
+              "Blue LED Indicator",
+              100,
+              NULL,
+              1,
+              &blue_inidator_task);
+  xTaskCreate(green_indicator,
+              "Green task indicator",
+              100,
+              NULL,
+              1,
+              &green_indicator_task);
+  xTaskCreate(orange_indicator,
+              "Orange task idicator",
+              100,
+              NULL,
+              1,
+              &orange_indicator_task);
+  xTaskCreate(accelerometer_handler,
+              "Accelerometer task",
+              100,
+              NULL,
+              1,
+              &accelerometer_task);
+  xTaskCreate(display_handler,
+              "LCD Display task",
+              100,
+              NULL,
+              1,
+              &display_task);
+
+  vTaskStartScheduler();
 
   while(1){
 
