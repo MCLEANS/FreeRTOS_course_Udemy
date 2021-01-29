@@ -78,7 +78,7 @@ TaskHandle_t accelerometer_task;
 TaskHandle_t display_task;
 
 /**
- * System tasks
+ * System task declarations
  */
 void red_indicator(void* pvParameter){
   while(1){
