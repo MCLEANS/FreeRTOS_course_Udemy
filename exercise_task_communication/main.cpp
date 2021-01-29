@@ -42,6 +42,32 @@ custom_libraries::LIS3DH motion_sensor(SPI1,
                                         CS_PIN);
 
 /**
+ * Initialize NOKIA 5110 LCD
+ */
+#define NOKIA_RST_PORT GPIOD
+#define NOKIA_RST_PIN 0
+#define NOKIA_CS_PORT GPIOD
+#define NOKIA_CS_PIN 1
+#define NOKIA_DC_PORT GPIOD
+#define NOKIA_DC_PIN 2
+
+custom_libraries::NOKIA_5110 NOKIA(SPI2,
+                                    GPIOB,
+                                    13,
+                                    15,
+                                    0,
+                                    64,
+                                    false,
+                                    false,
+                                    false,
+                                    NOKIA_CS_PORT,
+                                    NOKIA_CS_PIN,
+                                    NOKIA_RST_PORT,
+                                    NOKIA_RST_PIN,
+                                    NOKIA_DC_PORT,
+                                    NOKIA_DC_PIN);
+
+/**
  * System task handles
  */
 TaskHandle_t red_indicator_task;
