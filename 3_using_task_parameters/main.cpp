@@ -8,7 +8,7 @@
 
 /****************************************************************
  * Here we use the task parameter to pass an Id to it and 
- * blink a specific led with regards to the ID
+ * blink a specific led with regards to the ID.
  * *************************************************************/
 
 custom_libraries::clock_config system_clock;
