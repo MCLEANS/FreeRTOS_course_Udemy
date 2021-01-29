@@ -120,7 +120,9 @@ void accelerometer_handler(void* pvParameter){
 
 void display_handler(void* pvParameter){
   while(1){
-
+    /**
+     * Write task to handle the NOKIA 5110 LCD Display
+     */
   }
 }
 
