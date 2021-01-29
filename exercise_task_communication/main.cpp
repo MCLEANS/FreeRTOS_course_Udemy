@@ -112,7 +112,9 @@ void green_indicator(void* pvParameter){
 
 void accelerometer_handler(void* pvParameter){
   while(1){
-
+    /**
+     * Write tasks to handle obtaining data from the Accelerometer
+     */
   }
 }
 
