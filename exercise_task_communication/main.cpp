@@ -5,6 +5,7 @@
 #include <portmacro.h>
 
 #include "GPIO.h"
+#include "LIS3DH.h"
 
 /**
  * 1. Get accelerometer values from one task and push the values to LCD display task
@@ -12,10 +13,32 @@
  * 2. Use a semaphore to toggle an LED each time a valid accelerometer value is read.
  */
 custom_libraries::clock_config system_clock;
+
+/**
+ * LED object initialization
+ */
 custom_libraries::_GPIO green_led(GPIOD,12);
 custom_libraries::_GPIO orange_led(GPIOD,13);
 custom_libraries::_GPIO red_led(GPIOD,14);
 custom_libraries::_GPIO blue_led(GPIOD,15);
+
+/**
+ * Accelerometer object Initialization
+ */
+#define SCK_PIN 5
+#define MOSI_PIN 7
+#define MISO_PIN 6
+
+#define CS_PORT GPIOE
+#define CS_PIN 3
+
+custom_libraries::LIS3DH motion_sensor(SPI1,
+                                        GPIOA,
+                                        SCK_PIN,
+                                        MOSI_PIN,
+                                        MISO_PIN,
+                                        CS_PORT,
+                                        CS_PIN);
 
 /**
  * System task handles
@@ -73,7 +96,6 @@ void display_handler(void* pvParameter){
 }
 
 int main(void) {
-
   /**
    * Initialization of the system clock
    */
@@ -92,6 +114,17 @@ int main(void) {
   orange_led.output_settings(custom_libraries::PUSH_PULL,custom_libraries::VERY_HIGH);
   red_led.output_settings(custom_libraries::PUSH_PULL,custom_libraries::VERY_HIGH);
   blue_led.output_settings(custom_libraries::PUSH_PULL,custom_libraries::VERY_HIGH);
+
+  /**
+   * Initialize the motion sensor
+   */
+  bool Accel_is_initialized = motion_sensor.initialize();
+  if(!Accel_is_initialized){
+    /**
+     * Perform error handling here
+     */
+  }
+
   /**
    * Create system tasks
    */
