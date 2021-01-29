@@ -6,6 +6,7 @@
 
 #include "GPIO.h"
 #include "LIS3DH.h"
+#include "NOKIA_5110.h"
 
 /**
  * 1. Get accelerometer values from one task and push the values to LCD display task
