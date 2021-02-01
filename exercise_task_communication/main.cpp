@@ -8,11 +8,17 @@
 #include "LIS3DH.h"
 #include "NOKIA_5110.h"
 
+#include <queue.h>
+
 /**
  * 1. Get accelerometer values from one task and push the values to LCD display task
  * via a queue.
  * 2. Use a semaphore to toggle an LED each time a valid accelerometer value is read.
  */
+
+#define ANGLE_VALUES_QUEUE_LENGTH 20
+#define MS_TO_WAIT_ANGLES_VALUES_QUEUE 0
+
 custom_libraries::clock_config system_clock;
 
 /**
@@ -78,6 +84,11 @@ TaskHandle_t accelerometer_task;
 TaskHandle_t display_task;
 
 /**
+ * System Queue handles
+ */
+QueueHandle_t angle_values_queue;
+
+/**
  * System task declarations
  */
 void red_indicator(void* pvParameter){
@@ -133,6 +144,10 @@ void accelerometer_handler(void* pvParameter){
      * Write tasks to handle obtaining data from the Accelerometer
      */
     angle_values = motion_sensor.read_angles();
+    xQueueSend(angle_values_queue,
+                &angle_values,
+                pdMS_TO_TICKS(MS_TO_WAIT_ANGLES_VALUES_QUEUE));
+    vTaskDelay(pdMS_TO_TICKS(100));
   }
 }
 
@@ -164,6 +179,19 @@ int main(void) {
   red_led.output_settings(custom_libraries::PUSH_PULL,custom_libraries::VERY_HIGH);
   blue_led.output_settings(custom_libraries::PUSH_PULL,custom_libraries::VERY_HIGH);
 
+  /**
+   * Create angle values queue
+   */
+  angle_values_queue =  xQueueCreate(ANGLE_VALUES_QUEUE_LENGTH,
+                                    sizeof(custom_libraries::Angle_values));
+  /**
+   * Check if queue was created succesfully
+   */
+  if(angle_values_queue == NULL){
+    /**
+     * perform error handling here
+     */
+  }
   /**
    * Create system tasks
    */
