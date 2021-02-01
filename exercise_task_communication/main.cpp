@@ -147,6 +147,11 @@ void accelerometer_handler(void* pvParameter){
     xQueueSend(angle_values_queue,
                 &angle_values,
                 pdMS_TO_TICKS(MS_TO_WAIT_ANGLES_VALUES_QUEUE));
+    if(!pdTRUE){
+      /**
+       * Error handling here, Item was not successfully added to the queue
+       */
+    }
     vTaskDelay(pdMS_TO_TICKS(100));
   }
 }
