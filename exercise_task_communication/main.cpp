@@ -123,11 +123,16 @@ void accelerometer_handler(void* pvParameter){
      * Perform error handling here
      */
   }
+  /**
+   * Variable to hold received accelerometer values
+   */
+  custom_libraries::Angle_values angle_values;
+
   while(1){
     /**
      * Write tasks to handle obtaining data from the Accelerometer
      */
-
+    angle_values = motion_sensor.read_angles();
   }
 }
 
