@@ -171,6 +171,7 @@ void display_handler(void* pvParameter){
    * Get current task wake time
    */
   TickType_t previous_wake_time = xTaskGetTickCount();
+  
   while(1){
     /**
      * Reveive data from angle values queue
