@@ -3,7 +3,7 @@
 
 #include "SPI_16bit.h"
 
-#define SPI_PRESCALER 16
+#define SPI_PRESCALER_ 16
 
 /**
  * LIS3DH REGISTERS

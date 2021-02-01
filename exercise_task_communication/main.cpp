@@ -17,7 +17,9 @@
  */
 
 #define ANGLE_VALUES_QUEUE_LENGTH 20
-#define MS_TO_WAIT_ANGLES_VALUES_QUEUE 0
+#define MS_TO_WAIT_ANGLES_VALUES_QUEUE_SEND 0
+#define MS_TO_WAIT_ANGLES_VALUES_QUEUE_RECEIVE 0
+#define SCREEN_REFRESH_RATE 16 //Representation of 60Hz in ms
 
 custom_libraries::clock_config system_clock;
 
@@ -146,7 +148,7 @@ void accelerometer_handler(void* pvParameter){
     angle_values = motion_sensor.read_angles();
     BaseType_t angle_values_is_successfull =  xQueueSend(angle_values_queue,
                                                           &angle_values,
-                                                          pdMS_TO_TICKS(MS_TO_WAIT_ANGLES_VALUES_QUEUE));
+                                                          pdMS_TO_TICKS(MS_TO_WAIT_ANGLES_VALUES_QUEUE_SEND));
     if(angle_values_is_successfull != pdTRUE){
       /**
        * Error handling here, Item was not successfully added to the queue
@@ -165,20 +167,25 @@ void display_handler(void* pvParameter){
    * variable to store received accelerometer values
    */
   custom_libraries::Angle_values angle_values;
+  /**
+   * Get current task wake time
+   */
+  TickType_t previous_wake_time = xTaskGetTickCount();
   while(1){
     /**
      * Reveive data from angle values queue
      */
     BaseType_t angle_values_received_sucessfully = xQueueReceive(angle_values_queue,
                                                                   &angle_values,
-                                                                  portMAX_DELAY);
+                                                                  pdMS_TO_TICKS(MS_TO_WAIT_ANGLES_VALUES_QUEUE_RECEIVE));
     if(angle_values_received_sucessfully != pdTRUE){
       /**
        * Perform error handling here, queue values was not sucessfully received
        */
     }
     
-
+    vTaskDelayUntil(&previous_wake_time,
+                      pdMS_TO_TICKS(SCREEN_REFRESH_RATE));
   }
 }
 
