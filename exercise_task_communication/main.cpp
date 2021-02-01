@@ -147,7 +147,7 @@ void accelerometer_handler(void* pvParameter){
      */
     angle_values = motion_sensor.read_angles();
     BaseType_t angle_values_is_successfull =  xQueueSend(angle_values_queue,
-                                                          &angle_values,
+                                                          (void*)&angle_values,
                                                           pdMS_TO_TICKS(MS_TO_WAIT_ANGLES_VALUES_QUEUE_SEND));
     if(angle_values_is_successfull != pdTRUE){
       /**
@@ -183,7 +183,7 @@ void display_handler(void* pvParameter){
        * Perform error handling here, queue values was not sucessfully received
        */
     }
-    
+
     vTaskDelayUntil(&previous_wake_time,
                       pdMS_TO_TICKS(SCREEN_REFRESH_RATE));
   }
