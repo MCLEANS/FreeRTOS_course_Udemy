@@ -150,6 +150,9 @@ int main(void) {
    * Initialize the motion sensor
    */
   bool Accel_is_initialized = motion_sensor.initialize();
+  /**
+   * Check whether the Motion sensor was properly Initialized
+   */
   if(!Accel_is_initialized){
     /**
      * Perform error handling here
