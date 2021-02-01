@@ -144,10 +144,10 @@ void accelerometer_handler(void* pvParameter){
      * Write tasks to handle obtaining data from the Accelerometer
      */
     angle_values = motion_sensor.read_angles();
-    xQueueSend(angle_values_queue,
-                &angle_values,
-                pdMS_TO_TICKS(MS_TO_WAIT_ANGLES_VALUES_QUEUE));
-    if(!pdTRUE){
+    BaseType_t angle_values_is_successfull =  xQueueSend(angle_values_queue,
+                                                          &angle_values,
+                                                          pdMS_TO_TICKS(MS_TO_WAIT_ANGLES_VALUES_QUEUE));
+    if(angle_values_is_successfull != pdTRUE){
       /**
        * Error handling here, Item was not successfully added to the queue
        */
@@ -157,10 +157,28 @@ void accelerometer_handler(void* pvParameter){
 }
 
 void display_handler(void* pvParameter){
+  /**
+   * Configure display to nornmal mode
+   */
+  NOKIA.normal_mode();
+  /**
+   * variable to store received accelerometer values
+   */
+  custom_libraries::Angle_values angle_values;
   while(1){
     /**
-     * Write task to handle the NOKIA 5110 LCD Display
+     * Reveive data from angle values queue
      */
+    BaseType_t angle_values_received_sucessfully = xQueueReceive(angle_values_queue,
+                                                                  &angle_values,
+                                                                  portMAX_DELAY);
+    if(angle_values_received_sucessfully != pdTRUE){
+      /**
+       * Perform error handling here, queue values was not sucessfully received
+       */
+    }
+    
+
   }
 }
 
