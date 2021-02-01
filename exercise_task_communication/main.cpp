@@ -111,10 +111,23 @@ void green_indicator(void* pvParameter){
 }
 
 void accelerometer_handler(void* pvParameter){
+   /**
+   * Initialize the motion sensor
+   */
+  bool Accel_is_initialized = motion_sensor.initialize();
+  /**
+   * Check whether the Motion sensor was properly Initialized
+   */
+  if(!Accel_is_initialized){
+    /**
+     * Perform error handling here
+     */
+  }
   while(1){
     /**
      * Write tasks to handle obtaining data from the Accelerometer
      */
+
   }
 }
 
@@ -145,19 +158,6 @@ int main(void) {
   orange_led.output_settings(custom_libraries::PUSH_PULL,custom_libraries::VERY_HIGH);
   red_led.output_settings(custom_libraries::PUSH_PULL,custom_libraries::VERY_HIGH);
   blue_led.output_settings(custom_libraries::PUSH_PULL,custom_libraries::VERY_HIGH);
-
-  /**
-   * Initialize the motion sensor
-   */
-  bool Accel_is_initialized = motion_sensor.initialize();
-  /**
-   * Check whether the Motion sensor was properly Initialized
-   */
-  if(!Accel_is_initialized){
-    /**
-     * Perform error handling here
-     */
-  }
 
   /**
    * Create system tasks
