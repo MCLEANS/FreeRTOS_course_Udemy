@@ -93,6 +93,7 @@ TaskHandle_t orange_indicator_task;
 TaskHandle_t green_indicator_task;
 TaskHandle_t accelerometer_task;
 TaskHandle_t display_task;
+TaskHandle_t user_button_task;
 
 /**
  * Status variables
@@ -244,6 +245,12 @@ void display_handler(void* pvParameter){
   }
 }
 
+void user_button_handler(void* pvParameter){
+  while(1){
+    
+  }
+}
+
 /**
  * External Interrupt ISR
  */
@@ -334,6 +341,12 @@ int main(void) {
               NULL,
               1,
               &display_task);
+  xTaskCreate(user_button_handler,
+              "Task to handle the user button",
+              100,
+              NULL,
+              1,
+              &user_button_task);
 
   vTaskStartScheduler();
 
