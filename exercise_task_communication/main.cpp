@@ -7,6 +7,7 @@
 #include "GPIO.h"
 #include "LIS3DH.h"
 #include "NOKIA_5110.h"
+#include "EXTI.h"
 
 #include <queue.h>
 
@@ -41,6 +42,9 @@ custom_libraries::_GPIO blue_led(GPIOD,15);
 #define CS_PORT GPIOE
 #define CS_PIN 3
 
+/**
+ * Accelerometer initialization
+ */
 custom_libraries::LIS3DH motion_sensor(SPI1,
                                         GPIOA,
                                         SCK_PIN,
@@ -74,6 +78,11 @@ custom_libraries::NOKIA_5110 NOKIA(SPI2,
                                     NOKIA_RST_PIN,
                                     NOKIA_DC_PORT,
                                     NOKIA_DC_PIN);
+
+/**
+ * Control button initialization
+ */
+custom_libraries::_EXTI control_button(GPIOA,0,custom_libraries::RISING);
 
 /**
  * System task handles
@@ -235,6 +244,18 @@ void display_handler(void* pvParameter){
   }
 }
 
+/**
+ * External Interrupt ISR
+ */
+extern "C" void EXTI0_IRQHandler(void){
+  if(EXTI->PR & EXTI_PR_PR0){
+		EXTI->PR |= EXTI_PR_PR0;
+		/**
+     * Perform Sysnchronisation of interupt here
+     */
+	}
+}
+
 int main(void) {
   /**
    * Initialization of the system clock
@@ -254,6 +275,12 @@ int main(void) {
   orange_led.output_settings(custom_libraries::PUSH_PULL,custom_libraries::VERY_HIGH);
   red_led.output_settings(custom_libraries::PUSH_PULL,custom_libraries::VERY_HIGH);
   blue_led.output_settings(custom_libraries::PUSH_PULL,custom_libraries::VERY_HIGH);
+
+  /**
+   * Enable external Interrupt 0
+   */
+  NVIC_SetPriority(EXTI0_IRQn,0x05);
+  NVIC_EnableIRQ(EXTI0_IRQn);
 
   /**
    * Create angle values queue
