@@ -211,17 +211,20 @@ void display_handler(void* pvParameter){
        * Perform error handling here, queue values was not sucessfully received
        */
     }
+    /**
+     * handle which page to display on the LCD
+     */
     if(current_page == status){
       /**
        * Display status info here
        */
     }
-    if(current_page == time){
+    else if(current_page == time){
       /**
        * Display time info here
        */
     }
-    if(current_page == values){
+    else if(current_page == values){
       /**
        * Display accelerometer values here
        */
