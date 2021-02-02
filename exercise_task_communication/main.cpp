@@ -10,6 +10,7 @@
 #include "EXTI.h"
 
 #include <queue.h>
+#include <string.h>
 
 /**
  * 1. Get accelerometer values from one task and push the values to LCD display task
@@ -193,13 +194,11 @@ void display_handler(void* pvParameter){
    */
   NOKIA.normal_mode();
   /**
-   * Display welcome message
+   * Character arrays to hold values to display
    */
-  char welcome[] = "Hello World";
-  char alpha[] = "A";
-  NOKIA.print(welcome,10,3);
-  NOKIA.mark_point(1,0);  
-  NOKIA.print(alpha,10,0);
+  char x_axis[4];
+  char y_axis[4];
+
   /**
    * variable to store received accelerometer values
    */
@@ -221,6 +220,10 @@ void display_handler(void* pvParameter){
        * Perform error handling here, queue values was not sucessfully received
        */
     }
+
+    memcpy(x_axis,&angle_values.x_axis,sizeof(x_axis));
+    memcpy(y_axis,&angle_values.y_axis,sizeof(y_axis));
+
     /**
      * handle which page to display on the LCD
      */
@@ -237,7 +240,7 @@ void display_handler(void* pvParameter){
     else if(current_page == values){
       /**
        * Display accelerometer values here
-       */
+       */  
     }
 
     vTaskDelayUntil(&previous_wake_time,
@@ -247,7 +250,7 @@ void display_handler(void* pvParameter){
 
 void user_button_handler(void* pvParameter){
   while(1){
-    
+
   }
 }
 
