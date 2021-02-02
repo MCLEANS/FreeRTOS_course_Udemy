@@ -164,6 +164,11 @@ void display_handler(void* pvParameter){
    */
   NOKIA.normal_mode();
   /**
+   * Display welcome message
+   */
+  char welcome[] = "Hello World";
+  NOKIA.print(welcome,10,3);  
+  /**
    * variable to store received accelerometer values
    */
   custom_libraries::Angle_values angle_values;
@@ -171,7 +176,7 @@ void display_handler(void* pvParameter){
    * Get current task wake time
    */
   TickType_t previous_wake_time = xTaskGetTickCount();
-  
+
   while(1){
     /**
      * Reveive data from angle values queue
