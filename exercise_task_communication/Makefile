@@ -8,6 +8,7 @@ CXX_SOURCES += SPI_16bit.cpp
 CXX_SOURCES += LIS3DH.cpp
 CXX_SOURCES += SPI.cpp 
 CXX_SOURCES += NOKIA_5110.cpp
+CXX_SOURCES += EXTI.cpp
 
 
 CXX_OBJS += main.o
@@ -17,6 +18,7 @@ CXX_OBJS += SPI_16bit.o
 CXX_OBJS += LIS3DH.o
 CXX_OBJS += SPI.o 
 CXX_OBJS += NOKIA_5110.o
+CXX_OBJS += EXTI.o
 
 
 
