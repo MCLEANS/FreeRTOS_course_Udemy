@@ -86,6 +86,25 @@ TaskHandle_t accelerometer_task;
 TaskHandle_t display_task;
 
 /**
+ * Status variables
+ */
+bool is_initialized_accel = false;
+bool accel_values_received_by_display = false;
+bool accel_values_sent_to_display = false;
+bool is_initialized_angles_queue = false;
+
+/**
+ * Enum to hold display pages
+ */
+enum Display_page{
+  status,
+  values,
+  time
+};
+
+Display_page current_page = status;
+
+/**
  * System Queue handles
  */
 QueueHandle_t angle_values_queue;
@@ -146,10 +165,10 @@ void accelerometer_handler(void* pvParameter){
      * Write tasks to handle obtaining data from the Accelerometer
      */
     angle_values = motion_sensor.read_angles();
-    BaseType_t angle_values_is_successfull =  xQueueSend(angle_values_queue,
+    BaseType_t angle_values_send_successfull =  xQueueSend(angle_values_queue,
                                                           (void*)&angle_values,
                                                           pdMS_TO_TICKS(MS_TO_WAIT_ANGLES_VALUES_QUEUE_SEND));
-    if(angle_values_is_successfull != pdTRUE){
+    if(angle_values_send_successfull != pdTRUE){
       /**
        * Error handling here, Item was not successfully added to the queue
        */
@@ -190,6 +209,21 @@ void display_handler(void* pvParameter){
     if(angle_values_received_sucessfully != pdTRUE){
       /**
        * Perform error handling here, queue values was not sucessfully received
+       */
+    }
+    if(current_page == status){
+      /**
+       * Display status info here
+       */
+    }
+    if(current_page == time){
+      /**
+       * Display time info here
+       */
+    }
+    if(current_page == values){
+      /**
+       * Display accelerometer values here
        */
     }
 
