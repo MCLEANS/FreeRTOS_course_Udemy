@@ -135,6 +135,24 @@ void NOKIA_5110::send_data(char data){
     set_cs_pin();
 }
 
+void NOKIA_5110::mark_point(uint8_t x, uint8_t y){
+    const char data[] = {0xFF, 0xFF, 0xFF, 0xFF, 0xFF};
+    set_cursor(x,y);
+    for(volatile int i = 0; i < 5; i++){
+        send_data(data[i]);
+    }
+    send_data(0x00); //SEND A  SPACE BETWEEN CHARACTERS
+}
+
+void NOKIA_5110::unmark_point(uint8_t x, uint8_t y){
+    const char data[] = {0x00, 0x00, 0x00, 0x00, 0x00};
+    set_cursor(x,y);
+    for(volatile int i = 0; i < 5; i++){
+        send_data(data[i]);
+    }
+    send_data(0x00); //SEND A  SPACE BETWEEN CHARACTERS
+}
+
 //SEND ASCII CHARACTER TO THE LCD
 void NOKIA_5110::send_char(char data){
     for(volatile int i = 0; i < 5; i++){

@@ -167,7 +167,8 @@ void display_handler(void* pvParameter){
    * Display welcome message
    */
   char welcome[] = "Hello World";
-  NOKIA.print(welcome,10,3);  
+  NOKIA.print(welcome,10,3);
+  NOKIA.mark_point(20,1);  
   /**
    * variable to store received accelerometer values
    */

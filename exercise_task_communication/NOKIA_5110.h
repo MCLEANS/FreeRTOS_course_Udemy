@@ -159,6 +159,8 @@ class NOKIA_5110 : public _SPI{
                     uint8_t DC_PIN);
         void send_command(char cmd);
         void send_data(char byte);
+        void mark_point(uint8_t x, uint8_t y);
+        void unmark_point(uint8_t x, uint8_t y);
         void normal_mode();
         void inverted_mode();
         void clear();
