@@ -10,6 +10,7 @@
 #include "EXTI.h"
 
 #include <queue.h>
+#include <stdio.h>
 #include <string.h>
 
 /**
@@ -21,7 +22,7 @@
 #define ANGLE_VALUES_QUEUE_LENGTH 20
 #define MS_TO_WAIT_ANGLES_VALUES_QUEUE_SEND 0
 #define MS_TO_WAIT_ANGLES_VALUES_QUEUE_RECEIVE 0
-#define SCREEN_REFRESH_RATE 16 //Representation of 60Hz in ms
+#define SCREEN_REFRESH_RATE 1600 //Representation of 60Hz in ms
 
 custom_libraries::clock_config system_clock;
 
@@ -194,10 +195,18 @@ void display_handler(void* pvParameter){
    */
   NOKIA.normal_mode();
   /**
+   * Display constants
+   */
+  char clockwise[] = "CLK";
+  char anticlockwise[] = "ACLK";
+  char axis_x[] = "X";
+  char axis_y[] = "Y";
+
+    /**
    * Character arrays to hold values to display
    */
-  char x_axis[4];
-  char y_axis[4];
+  char x_axis_[10];
+  char y_axis_[10];
 
   /**
    * variable to store received accelerometer values
@@ -221,8 +230,14 @@ void display_handler(void* pvParameter){
        */
     }
 
-    memcpy(x_axis,&angle_values.x_axis,sizeof(x_axis));
-    memcpy(y_axis,&angle_values.y_axis,sizeof(y_axis));
+    int data = 23;
+    //std::to_chars(x_axis_,x_axis_+sizeof(x_axis_),angle_values.x_axis,10);
+    //std::to_chars(y_axis_,y_axis_+3,angle_values.y_axis,10);
+    sprintf(y_axis_,"%d",angle_values.y_axis);
+    /**
+     * Refresh the screen
+     */
+    NOKIA.clear();
 
     /**
      * handle which page to display on the LCD
@@ -240,11 +255,34 @@ void display_handler(void* pvParameter){
     else if(current_page == values){
       /**
        * Display accelerometer values here
-       */  
-    }
+       */
+       NOKIA.print(clockwise,20,1);
+      NOKIA.print(anticlockwise,55,1);
+      NOKIA.print(axis_x,5,2);
+      NOKIA.print(axis_y,5,4);
 
-    vTaskDelayUntil(&previous_wake_time,
-                      pdMS_TO_TICKS(SCREEN_REFRESH_RATE));
+      if(angle_values.x_clockwise){
+        NOKIA.print(y_axis_,0,1);
+        NOKIA.mark_point(55,2);
+        }
+      else{
+        NOKIA.mark_point(20,2);
+        NOKIA.print(x_axis_,55,2);
+      }
+
+    if(angle_values.y_clockwise){
+        NOKIA.print(y_axis_,20,4);
+        NOKIA.mark_point(55,4);
+      }
+      else{
+        NOKIA.print(y_axis_,55,4);
+        NOKIA.mark_point(20,4);
+       }  
+      
+    }
+       
+   vTaskDelayUntil(&previous_wake_time,
+                  pdMS_TO_TICKS(SCREEN_REFRESH_RATE));
   }
 }
 
@@ -342,7 +380,7 @@ int main(void) {
               "LCD Display task",
               100,
               NULL,
-              1,
+              2,
               &display_task);
   xTaskCreate(user_button_handler,
               "Task to handle the user button",
