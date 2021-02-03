@@ -280,7 +280,7 @@ void display_handler(void* pvParameter){
        }  
       
     }
-       
+
    vTaskDelayUntil(&previous_wake_time,
                   pdMS_TO_TICKS(SCREEN_REFRESH_RATE));
   }
@@ -288,7 +288,19 @@ void display_handler(void* pvParameter){
 
 void user_button_handler(void* pvParameter){
   while(1){
-
+    switch(current_page){
+      case status:
+        current_page = time;
+        break;
+      case time:
+        current_page = values;
+        break;
+      case values:
+        current_page = time;
+        break;
+      default:
+        break;
+    }
   }
 }
 
