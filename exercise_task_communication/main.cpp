@@ -170,6 +170,10 @@ void accelerometer_handler(void* pvParameter){
     /**
      * Perform error handling here
      */
+    is_initialized_accel = false;
+  }
+  else{
+    is_initialized_accel = true;
   }
   /**
    * Variable to hold received accelerometer values
@@ -205,6 +209,10 @@ void display_handler(void* pvParameter){
   char anticlockwise[] = "ACLK";
   char axis_x[] = "X";
   char axis_y[] = "Y";
+  char page2_title[] = "STATUS";
+  char accel_init[] = "AI";
+  char accel_received_display[] = "ARD";
+  char accel_sent_display[] = "ASD";
 
     /**
    * Character arrays to hold values to display
@@ -249,7 +257,16 @@ void display_handler(void* pvParameter){
       /**
        * Display status info here
        */
-      NOKIA.print("PAGE 2",10,3);
+      NOKIA.print(page2_title,20,0);
+      NOKIA.print(accel_init,5,2);
+      if(is_initialized_accel){
+        NOKIA.mark_point(20,2);
+      }
+      else{
+        NOKIA.unmark_point(20,2);
+      }
+        
+     
     }
     else if(current_page == time){
       /**
