@@ -10,8 +10,7 @@
 #include "EXTI.h"
 
 #include <queue.h>
-#include <stdio.h>
-#include <string.h>
+#include <semphr.h>
 
 /**
  * 1. Get accelerometer values from one task and push the values to LCD display task
@@ -84,7 +83,7 @@ custom_libraries::NOKIA_5110 NOKIA(SPI2,
 /**
  * Control button initialization
  */
-custom_libraries::_EXTI control_button(GPIOA,0,custom_libraries::RISING);
+custom_libraries::_EXTI control_button(GPIOA,0,custom_libraries::FALLING);
 
 /**
  * System task handles
@@ -114,12 +113,17 @@ enum Display_page{
   time
 };
 
-Display_page current_page = status;
+Display_page current_page = time;
 
 /**
  * System Queue handles
  */
 QueueHandle_t angle_values_queue;
+
+/**
+ * Semaphore handles
+ */
+SemaphoreHandle_t button_press_semaphore;
 
 /**
  * System task declarations
@@ -233,7 +237,6 @@ void display_handler(void* pvParameter){
     int data = 23;
     //std::to_chars(x_axis_,x_axis_+sizeof(x_axis_),angle_values.x_axis,10);
     //std::to_chars(y_axis_,y_axis_+3,angle_values.y_axis,10);
-    sprintf(y_axis_,"%d",angle_values.y_axis);
     /**
      * Refresh the screen
      */
@@ -246,6 +249,7 @@ void display_handler(void* pvParameter){
       /**
        * Display status info here
        */
+      NOKIA.print("PAGE 2",10,3);
     }
     else if(current_page == time){
       /**
@@ -288,18 +292,18 @@ void display_handler(void* pvParameter){
 
 void user_button_handler(void* pvParameter){
   while(1){
-    switch(current_page){
-      case status:
-        current_page = time;
-        break;
-      case time:
-        current_page = values;
-        break;
-      case values:
-        current_page = time;
-        break;
-      default:
-        break;
+    if(xSemaphoreTake(button_press_semaphore,portMAX_DELAY) == pdTRUE){
+       switch(current_page){
+        case status:
+          current_page = time;
+          break;
+        case time:
+          current_page = values;
+          break;
+        case values:
+          current_page = status;
+          break;
+      }
     }
   }
 }
@@ -308,12 +312,19 @@ void user_button_handler(void* pvParameter){
  * External Interrupt ISR
  */
 extern "C" void EXTI0_IRQHandler(void){
+  BaseType_t xHigherPriorityTaskWoken;
+  xHigherPriorityTaskWoken = pdFALSE;
   if(EXTI->PR & EXTI_PR_PR0){
 		EXTI->PR |= EXTI_PR_PR0;
 		/**
      * Perform Sysnchronisation of interupt here
      */
+    xSemaphoreGiveFromISR(button_press_semaphore,&xHigherPriorityTaskWoken);
 	}
+  if(xHigherPriorityTaskWoken == pdTRUE){
+    portYIELD_FROM_ISR(xHigherPriorityTaskWoken);
+  }
+  
 }
 
 int main(void) {
@@ -337,6 +348,11 @@ int main(void) {
   blue_led.output_settings(custom_libraries::PUSH_PULL,custom_libraries::VERY_HIGH);
 
   /**
+   * Initialize control button
+   */
+  control_button.initialize();
+
+  /**
    * Enable external Interrupt 0
    */
   NVIC_SetPriority(EXTI0_IRQn,0x05);
@@ -355,6 +371,23 @@ int main(void) {
      * perform error handling here
      */
   }
+  
+  /**
+   * Create button press semaphore
+   */
+  button_press_semaphore = xSemaphoreCreateBinary();
+  /**
+   * Check if semaphore was successfully created
+   */  
+  if(button_press_semaphore == NULL){
+    /**
+     * Perform error handling here
+     */
+  }
+  else{
+    xSemaphoreGive(button_press_semaphore);
+  }
+
   /**
    * Create system tasks
    */
