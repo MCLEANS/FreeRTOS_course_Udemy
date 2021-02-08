@@ -21,7 +21,7 @@
 #define ANGLE_VALUES_QUEUE_LENGTH 20
 #define MS_TO_WAIT_ANGLES_VALUES_QUEUE_SEND 0
 #define MS_TO_WAIT_ANGLES_VALUES_QUEUE_RECEIVE 0
-#define SCREEN_REFRESH_RATE 1600 //Representation of 60Hz in ms
+#define SCREEN_REFRESH_RATE 100 //Representation of 60Hz in ms
 
 custom_libraries::clock_config system_clock;
 
@@ -113,7 +113,7 @@ enum Display_page{
   time
 };
 
-Display_page current_page = time;
+Display_page current_page = status;
 
 /**
  * System Queue handles
@@ -192,6 +192,10 @@ void accelerometer_handler(void* pvParameter){
       /**
        * Error handling here, Item was not successfully added to the queue
        */
+      accel_values_sent_to_display = false;
+    }
+    else{
+      accel_values_sent_to_display = true;
     }
     vTaskDelay(pdMS_TO_TICKS(100));
   }
@@ -240,9 +244,12 @@ void display_handler(void* pvParameter){
       /**
        * Perform error handling here, queue values was not sucessfully received
        */
+      accel_values_received_by_display = false;
+    }
+    else{
+      accel_values_received_by_display = true;
     }
 
-    int data = 23;
     //std::to_chars(x_axis_,x_axis_+sizeof(x_axis_),angle_values.x_axis,10);
     //std::to_chars(y_axis_,y_axis_+3,angle_values.y_axis,10);
     /**
@@ -258,21 +265,35 @@ void display_handler(void* pvParameter){
        * Display status info here
        */
       NOKIA.print(page2_title,20,0);
-      NOKIA.print(accel_init,5,2);
+      NOKIA.print(accel_init,5,1);
       if(is_initialized_accel){
-        NOKIA.mark_point(20,2);
+        NOKIA.mark_point(20,1);
       }
       else{
-        NOKIA.unmark_point(20,2);
+        NOKIA.unmark_point(20,1);
       }
-        
-     
-    }
+      NOKIA.print(accel_received_display,5,3);
+      if(accel_values_received_by_display){
+        NOKIA.mark_point(25,3);
+      }
+      else{
+        NOKIA.unmark_point(25,3);
+      }
+      NOKIA.print(accel_sent_display,5,5);
+      if(accel_values_sent_to_display){
+        NOKIA.mark_point(25,5);
+      }
+      else{
+        NOKIA.unmark_point(25,5);
+      }
+   }
+
     else if(current_page == time){
       /**
        * Display time info here
        */
     }
+
     else if(current_page == values){
       /**
        * Display accelerometer values here
