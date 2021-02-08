@@ -109,8 +109,7 @@ bool is_initialized_angles_queue = false;
  */
 enum Display_page{
   status,
-  values,
-  time
+  values
 };
 
 Display_page current_page = status;
@@ -288,12 +287,6 @@ void display_handler(void* pvParameter){
       }
    }
 
-    else if(current_page == time){
-      /**
-       * Display time info here
-       */
-    }
-
     else if(current_page == values){
       /**
        * Display accelerometer values here
@@ -304,20 +297,20 @@ void display_handler(void* pvParameter){
       NOKIA.print(axis_y,5,4);
 
       if(angle_values.x_clockwise){
-        NOKIA.print(y_axis_,0,1);
+       // NOKIA.print(y_axis_,0,1);
         NOKIA.mark_point(55,2);
         }
       else{
         NOKIA.mark_point(20,2);
-        NOKIA.print(x_axis_,55,2);
+       // NOKIA.print(x_axis_,55,2);
       }
 
     if(angle_values.y_clockwise){
-        NOKIA.print(y_axis_,20,4);
+        //NOKIA.print(y_axis_,20,4);
         NOKIA.mark_point(55,4);
       }
       else{
-        NOKIA.print(y_axis_,55,4);
+       // NOKIA.print(y_axis_,55,4);
         NOKIA.mark_point(20,4);
        }  
       
@@ -333,9 +326,6 @@ void user_button_handler(void* pvParameter){
     if(xSemaphoreTake(button_press_semaphore,portMAX_DELAY) == pdTRUE){
        switch(current_page){
         case status:
-          current_page = time;
-          break;
-        case time:
           current_page = values;
           break;
         case values:
