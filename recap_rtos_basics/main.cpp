@@ -24,25 +24,37 @@ TaskHandle_t orange_led_task;
  */
 void red_task(void* pvParam){
   while(1){
-
+    /* Toggle LED */
+    red_led.toggle();
+    /* create task delay */
+    vTaskDelay(pdMS_TO_TICKS(200));
   }
 }
 
 void blue_task(void* pvParam){
   while(1){
-
+    /* Toggle LED */
+    blue_led.toggle();
+    /* create task delay */
+    vTaskDelay(pdMS_TO_TICKS(400));
   }
 }
 
 void orange_task(void* pvParam){
   while(1){
-
+    /* Toggle LED */
+    orange_led.toggle();
+    /* create task delay */
+    vTaskDelay(pdMS_TO_TICKS(300));
   }
 }
 
 void green_task(void* pvParam){
   while(1){
-
+    /* Toggle LED */
+    green_led.toggle();
+    /* create task delay */
+    vTaskDelay(pdMS_TO_TICKS(100));
   }
 }
 
@@ -86,7 +98,10 @@ int main(void) {
               100,
               NULL,
               1,
-              &green_led_task);  
+              &green_led_task); 
+               
+  /* start the system scheduler */
+  vTaskStartScheduler();
 
  while(1){
 
