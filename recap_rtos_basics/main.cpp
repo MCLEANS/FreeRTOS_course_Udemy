@@ -13,6 +13,39 @@ custom_libraries::_GPIO orange_led(GPIOD,13);
 custom_libraries::_GPIO red_led(GPIOD,14);
 custom_libraries::_GPIO blue_led(GPIOD,15);
 
+/* System task handles */
+TaskHandle_t red_led_task;
+TaskHandle_t blue_led_task;
+TaskHandle_t green_led_task;
+TaskHandle_t orange_led_task;
+
+/**
+ * System Tasks
+ */
+void red_task(void* pvParam){
+  while(1){
+
+  }
+}
+
+void blue_task(void* pvParam){
+  while(1){
+
+  }
+}
+
+void orange_task(void* pvParam){
+  while(1){
+
+  }
+}
+
+void green_task(void* pvParam){
+  while(1){
+
+  }
+}
+
 int main(void) {
   /* initialize the system clock */
   system_clock.initialize();
@@ -29,9 +62,33 @@ int main(void) {
   blue_led.output_settings(custom_libraries::PUSH_PULL,custom_libraries::HIGH);
   red_led.output_settings(custom_libraries::PUSH_PULL,custom_libraries::HIGH);
 
+  /* Create system tasks */
+  xTaskCreate(red_task,
+              "Red LED controller",
+              100,
+              NULL,
+              1,
+              &red_led_task);
+  xTaskCreate(blue_task,
+              "Blue LED controller",
+              100,
+              NULL,
+              1,
+              &blue_led_task);
+  xTaskCreate(orange_task,
+              "Orange LED controller",
+              100,
+              NULL,
+              1,
+              &orange_led_task);
+  xTaskCreate(green_task,
+              "Green LED controller",
+              100,
+              NULL,
+              1,
+              &green_led_task);  
 
- 
-  while(1){
+ while(1){
 
   }
 }
