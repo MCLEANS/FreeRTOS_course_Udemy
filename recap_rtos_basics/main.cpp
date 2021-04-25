@@ -23,6 +23,7 @@ TaskHandle_t orange_led_task;
  * Global variables
  */
 uint16_t counter = 0;
+bool is_suspended = false;
 
 /**
  * System Tasks
@@ -32,8 +33,9 @@ void red_task(void* pvParam){
     /* Toggle LED */
     red_led.toggle();
     counter++;
-    if(counter > 50){
+    if((counter > 50) and (is_suspended == false)){
       counter = 0;
+      is_suspended = true;
       vTaskSuspend(blue_led_task);
     }
     /* create task delay */
@@ -54,6 +56,11 @@ void orange_task(void* pvParam){
   while(1){
     /* Toggle LED */
     orange_led.toggle();
+    if((counter > 50) and (is_suspended == true)){
+      counter = 0;
+      is_suspended = false;
+      vTaskResume(blue_led_task);
+    }
     /* create task delay */
     vTaskDelay(pdMS_TO_TICKS(300));
   }
