@@ -102,7 +102,7 @@ int main(void) {
               "Blue LED controller",
               100,
               NULL,
-              1,
+              2,
               &blue_led_task);
   xTaskCreate(orange_task,
               "Orange LED controller",
