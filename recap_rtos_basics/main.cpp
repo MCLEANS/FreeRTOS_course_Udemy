@@ -20,12 +20,22 @@ TaskHandle_t green_led_task;
 TaskHandle_t orange_led_task;
 
 /**
+ * Global variables
+ */
+uint16_t counter = 0;
+
+/**
  * System Tasks
  */
 void red_task(void* pvParam){
   while(1){
     /* Toggle LED */
     red_led.toggle();
+    counter++;
+    if(counter > 50){
+      counter = 0;
+      vTaskSuspend(blue_led_task);
+    }
     /* create task delay */
     vTaskDelay(pdMS_TO_TICKS(200));
   }
@@ -99,7 +109,7 @@ int main(void) {
               NULL,
               1,
               &green_led_task); 
-               
+
   /* start the system scheduler */
   vTaskStartScheduler();
 
