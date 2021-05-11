@@ -5,6 +5,7 @@
 #include <portmacro.h>
 
 #include <timers.h>
+#include <semphr.h> /* To be used for synchronisation */
 #include "GPIO.h"
 
 #define RED_LED_TIMER_ID 144
@@ -24,6 +25,10 @@ TaskHandle_t blue_led_task;
 TimerHandle_t red_timer;
 TimerHandle_t blue_timer;
 
+/* Semaphore handles */
+SemaphoreHandle_t red_semaphore;
+SemaphoreHandle_t blue_semaphore;
+
 /* System tasks */
 void red_blink(void* pvParam){
   while(1){
@@ -33,7 +38,9 @@ void red_blink(void* pvParam){
 
 void blue_blink(void* pvParam){
   while(1){
-
+    if(xSemaphoreTake(blue_semaphore,portMAX_DELAY) == pdTRUE){
+      blue_led.toggle();
+    }
   }
 }
 
@@ -42,7 +49,14 @@ void red_timer_callback(TimerHandle_t xTimer){
 }
 
 void blue_timer_callback(TimerHandle_t xTimer){
-  blue_led.toggle();
+  static BaseType_t xHigherPriorityTaskWoken;
+  xHigherPriorityTaskWoken = pdFALSE;
+  /* Unbloack the blue blink task by giving the semaphore */
+  xSemaphoreGiveFromISR(blue_semaphore,&xHigherPriorityTaskWoken);
+  /* If xHigherPriorityTaskWoken was set to true you should yield */
+  if(xHigherPriorityTaskWoken == pdTRUE){
+    portYIELD_FROM_ISR(xHigherPriorityTaskWoken);
+  }
 }
 
 int main(void) {
@@ -84,14 +98,30 @@ int main(void) {
   }
 
   blue_timer = xTimerCreate("Blue Led Timer",
-                            pdMS_TO_TICKS(500),
+                            pdMS_TO_TICKS(100),
                             true,
                             (void*)BLUE_LED_TIMER_ID,
                             blue_timer_callback);
   if(blue_timer != NULL){
     xTimerStart(blue_timer,0);
   }
-  
+
+  /* Create binary semaphore */
+  red_semaphore = xSemaphoreCreateBinary();
+  if(red_semaphore == NULL){
+    /* Perform error handling */
+  }
+  else{
+    xSemaphoreGive(red_semaphore);
+  }
+  blue_semaphore = xSemaphoreCreateBinary();
+  if(blue_semaphore == NULL){
+    /* Perform error handling */
+  }
+  else{
+    xSemaphoreGive(blue_semaphore);
+  }
+
   vTaskStartScheduler();
 
   while(1){
