@@ -32,7 +32,9 @@ SemaphoreHandle_t blue_semaphore;
 /* System tasks */
 void red_blink(void* pvParam){
   while(1){
-
+    if(xSemaphoreTake(red_semaphore,portMAX_DELAY) == pdTRUE){
+      red_led.toggle();
+    }
   }
 }
 
@@ -45,7 +47,14 @@ void blue_blink(void* pvParam){
 }
 
 void red_timer_callback(TimerHandle_t xTimer){
-  red_led.toggle();
+   static BaseType_t xHigherPriorityTaskWoken;
+  xHigherPriorityTaskWoken = pdFALSE;
+  /* Unbloack the blue blink task by giving the semaphore */
+  xSemaphoreGiveFromISR(red_semaphore,&xHigherPriorityTaskWoken);
+  /* If xHigherPriorityTaskWoken was set to true you should yield */
+  if(xHigherPriorityTaskWoken == pdTRUE){
+    portYIELD_FROM_ISR(xHigherPriorityTaskWoken);
+  }
 }
 
 void blue_timer_callback(TimerHandle_t xTimer){
@@ -89,7 +98,7 @@ int main(void) {
 
   /* Create system timers, they will only start running once the scheduler starts */
   red_timer = xTimerCreate("Red Led timer",
-                          pdMS_TO_TICKS(100),
+                          pdMS_TO_TICKS(500),
                           true,
                           (void*)RED_LED_TIMER_ID,
                           red_timer_callback);
@@ -98,7 +107,7 @@ int main(void) {
   }
 
   blue_timer = xTimerCreate("Blue Led Timer",
-                            pdMS_TO_TICKS(100),
+                            pdMS_TO_TICKS(1000),
                             true,
                             (void*)BLUE_LED_TIMER_ID,
                             blue_timer_callback);
