@@ -17,6 +17,8 @@ custom_libraries::_GPIO blue_led(GPIOD,15);
  */
 TaskHandle_t red_led_task;
 TaskHandle_t blue_led_task;
+TaskHandle_t green_led_task;
+TaskHandle_t orange_led_task;
 
 /**
  * System tasks
@@ -28,6 +30,18 @@ void red_blink(void* pvParam){
 }
 
 void blue_blink(void* pvParam){
+  while(1){
+
+  }
+}
+
+void orange_blink(void* pvParam){
+  while(1){
+
+  }
+}
+
+void green_blink(void* pvParam){
   while(1){
     
   }
@@ -60,6 +74,18 @@ int main(void) {
               NULL,
               1,
               &blue_led_task);
+  xTaskCreate(green_blink,
+              "Green Led controller",
+              100,
+              NULL,
+              1,
+              &green_led_task);
+  xTaskCreate(orange_blink,
+              "Orange Led controller",
+              100,
+              NULL,
+              1,
+              &orange_led_task);
 
   while(1){
 
