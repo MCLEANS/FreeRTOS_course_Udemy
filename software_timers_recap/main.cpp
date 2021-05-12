@@ -9,6 +9,8 @@
 
 #define BLUE_TIMER_ID 234
 #define RED_TIMER_ID 123
+#define ORANGE_TIMER_ID 675
+#define GREEN_TIMER_ID 345
 
 custom_libraries::clock_config system_clock;
 custom_libraries::_GPIO green_led(GPIOD,12);
@@ -67,8 +69,15 @@ void blue_led_callback(TimerHandle_t xTimer){
   red_led.toggle();
 }
 
+void green_led_callback(TimerHandle_t xTimer){
+  green_led.toggle();
+}
+
+void orange_led_callback(TimerHandle_t xTimer){
+  orange_led.toggle();
+}
+
 int main(void) {
-  
   system_clock.initialize();
   //configure LEDs as output
   green_led.pin_mode(custom_libraries::OUTPUT);
@@ -124,6 +133,24 @@ int main(void) {
   if(blue_timer != NULL){
     xTimerStart(blue_timer,0);
   }
+
+  orange_timer = xTimerCreate("Orange Led Timer",
+                          pdMS_TO_TICKS(500),
+                          true,
+                          (void*)ORANGE_TIMER_ID,
+                          orange_led_callback);
+  if(orange_timer != NULL){
+    xTimerStart(orange_timer,0);
+  }
+
+  green_timer = xTimerCreate("Green Led Timer",
+                              pdMS_TO_TICKS(100),
+                              true,
+                              (void*)GREEN_TIMER_ID,
+                              green_led_callback);
+  if(green_timer != NULL){
+    xTimerStart(green_timer,0);
+  }                        
 
   vTaskStartScheduler();
 
