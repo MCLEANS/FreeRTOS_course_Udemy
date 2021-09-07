@@ -12,6 +12,9 @@
 #include <queue.h>
 #include <semphr.h>
 
+#include <charconv>
+
+
 /**
  * 1. Get accelerometer values from one task and push the values to LCD display task
  * via a queue.
@@ -124,6 +127,25 @@ QueueHandle_t angle_values_queue;
  */
 SemaphoreHandle_t button_press_semaphore;
 
+void tostring(char str[], int num)
+{
+  int i, rem, len = 0, n;
+  n = num;
+  while (n != 0)
+  {
+    len++; //get length for string/digits in int
+    n = n / 10;
+  }
+  //convert and store in string
+  for (i = 0; i < len; i++)
+  {
+    rem = num % 10;                 //last digit fetched first
+    num = num / 10;                 //continue fetching rest of the digits
+    str[len - (i + 1)] = rem + '0'; //start storing string with max-1 index first
+  }
+  str[len] = '\0'; //null to end the string[max]
+}
+
 /**
  * System task declarations
  */
@@ -220,8 +242,8 @@ void display_handler(void* pvParameter){
     /**
    * Character arrays to hold values to display
    */
-  char x_axis_[10];
-  char y_axis_[10];
+  char x_axis_[5];
+  char y_axis_[5];
 
   /**
    * variable to store received accelerometer values
@@ -249,8 +271,8 @@ void display_handler(void* pvParameter){
       accel_values_received_by_display = true;
     }
 
-    //std::to_chars(x_axis_,x_axis_+sizeof(x_axis_),angle_values.x_axis,10);
-    //std::to_chars(y_axis_,y_axis_+3,angle_values.y_axis,10);
+    tostring(x_axis_,angle_values.x_axis);
+    tostring(y_axis_,angle_values.y_axis);
     /**
      * Refresh the screen
      */
@@ -291,26 +313,26 @@ void display_handler(void* pvParameter){
       /**
        * Display accelerometer values here
        */
-       NOKIA.print(clockwise,20,1);
+      NOKIA.print(clockwise,20,1);
       NOKIA.print(anticlockwise,55,1);
       NOKIA.print(axis_x,5,2);
       NOKIA.print(axis_y,5,4);
 
       if(angle_values.x_clockwise){
-       // NOKIA.print(y_axis_,0,1);
+        NOKIA.print(x_axis_,20,2);
         NOKIA.mark_point(55,2);
         }
       else{
         NOKIA.mark_point(20,2);
-       // NOKIA.print(x_axis_,55,2);
+        NOKIA.print(x_axis_,55,2);
       }
 
     if(angle_values.y_clockwise){
-        //NOKIA.print(y_axis_,20,4);
+        NOKIA.print(y_axis_,20,4);
         NOKIA.mark_point(55,4);
       }
       else{
-       // NOKIA.print(y_axis_,55,4);
+        NOKIA.print(y_axis_,55,4);
         NOKIA.mark_point(20,4);
        }  
       
