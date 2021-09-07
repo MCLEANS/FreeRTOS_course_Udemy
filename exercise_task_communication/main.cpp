@@ -12,8 +12,6 @@
 #include <queue.h>
 #include <semphr.h>
 
-#include <charconv>
-
 
 /**
  * 1. Get accelerometer values from one task and push the values to LCD display task
