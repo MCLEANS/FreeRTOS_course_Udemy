@@ -6,6 +6,12 @@
 
 #include "GPIO.h"
 
+/**
+ * 1. When the scheduler is configured as pre-emptive only it will always execute the highest priority unblocked task.
+ * 2. When two tasks of the same priority are both in the running state without any blocking or yielding then the scheduler 
+ *    will execute only the task that was created first and not allow CPU time for the other task of the same priority.
+ */
+
 custom_libraries::clock_config system_clock;
 custom_libraries::_GPIO green_led(GPIOD,12);
 custom_libraries::_GPIO orange_led(GPIOD,13);
