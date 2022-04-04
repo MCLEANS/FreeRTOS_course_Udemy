@@ -198,8 +198,8 @@ void _EXTI::initialize(){
 	//set interrupt line to input pull_up
 	GPIO->MODER &= ~(1<<(PIN*2));
 	GPIO->MODER &= ~(1<<((PIN*2)+1));
-	GPIO->PUPDR |= (1<<(PIN*2));
-	GPIO->PUPDR &= ~(1<<((PIN*2)+1));
+	GPIO->PUPDR &= ~(1<<(PIN*2));
+	GPIO->PUPDR |= (1<<((PIN*2)+1));
 }
 
 _EXTI::~_EXTI() {
