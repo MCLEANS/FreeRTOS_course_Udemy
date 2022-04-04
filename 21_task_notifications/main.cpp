@@ -20,12 +20,35 @@ custom_libraries::_GPIO blue_led(GPIOD,15);
 custom_libraries::edge response_edge = custom_libraries::RISING;
 custom_libraries::_EXTI button(INTERRUPT_PORT,INTERRUPT_PIN,response_edge);
 
+TaskHandle_t blink_task_handle;
+
 extern "C" void EXTI0_IRQHandler(void){
   if(EXTI->PR & EXTI_PR_PR0){
     /* We are here because of Interrupt on PAO */
     EXTI->PR |= EXTI_PR_PR0;
-    /* Blink red led */
-    red_led.toggle();
+    /* Send notification to blinking task */
+    BaseType_t xHigherPriorityTaskWoken = pdFALSE;
+    vTaskNotifyGiveFromISR(blink_task_handle, &xHigherPriorityTaskWoken);
+
+    if(xHigherPriorityTaskWoken == pdTRUE){
+      portYIELD_FROM_ISR(xHigherPriorityTaskWoken);
+    }
+  }
+}
+
+void blinky(void* pvParam){
+  bool led_blink = true;
+
+  while(1){
+
+    if(ulTaskNotifyTake(pdFALSE, portMAX_DELAY) != 0){
+      red_led.toggle();
+      blue_led.toggle();
+      orange_led.toggle();
+      green_led.toggle();
+    }
+    
+    vTaskDelay(pdMS_TO_TICKS(100));
   }
 }
 
@@ -48,6 +71,13 @@ int main(void) {
   orange_led.output_settings(custom_libraries::PUSH_PULL,custom_libraries::VERY_HIGH);
   red_led.output_settings(custom_libraries::PUSH_PULL,custom_libraries::VERY_HIGH);
   blue_led.output_settings(custom_libraries::PUSH_PULL,custom_libraries::VERY_HIGH);
+
+  xTaskCreate(blinky,
+              "Task to blink LEDs",
+              100,
+              NULL,
+              1,
+              &blink_task_handle);
   
   vTaskStartScheduler();
 
